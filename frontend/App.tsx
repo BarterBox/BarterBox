@@ -3,29 +3,21 @@ import { StyleSheet } from "react-native";
 import View from 'react-native-ui-lib/view';
 import Text from 'react-native-ui-lib/text';
 
-import { initializeApp } from "firebase/app";
+import Firebase from "./Firebase";
+import { getAuth, signInWithEmailAndPassword}
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
-import { useEffect,useState } from "react";
+import { useEffect,useMemo,useState,createContext } from "react";
 import React from "react";
 
-
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-	apiKey: "AIzaSyDuCfCrzKwNr76dXBYy0A1ZQNigj-rz2aQ",
-	authDomain: "barter-box-a2d9f.firebaseapp.com",
-	projectId: "barter-box-a2d9f",
-	storageBucket: "barter-box-a2d9f.appspot.com",
-	messagingSenderId: "485483637136",
-	appId: "1:485483637136:web:be1104ddc3cab4e4676b15",
-	measurementId: "G-758NTMNZXJ",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
+const db = getFirestore(Firebase);
+
+const mainContext = createContext([])
+
+const [userLogged, setUserLogged] = useState(false)
+const [userProfile, setUserProfile] = useState(null)
+const [isLoading, setIsLoading] = useState(true)
 
 const App = () => {
   const [items, setItems] = useState([]);
@@ -44,6 +36,18 @@ const App = () => {
         console.log("Error getting documents: ", error);
       });
   }, []);
+
+  const mainC = useMemo(
+    () => ({
+      userProfile: { userProfile },
+      handleLogin: (email, password) => {
+        setIsLoading(true);
+        
+        setIsLoading(false);
+      }
+
+    }), [])
+  
 
   return (
     <View style={styles.container}>
