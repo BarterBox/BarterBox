@@ -1,10 +1,15 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { initializeApp } from "firebase/app";
+import { StyleSheet } from "react-native";
+import View from 'react-native-ui-lib/view';
+import Text from 'react-native-ui-lib/text';
 
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { useEffect,useState } from "react";
 import React from "react";
+
+
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -42,7 +47,7 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <Text>All Items:</Text>
+      <Text text30>All Items:</Text>
       {items.map((item, index) => (
         <Text key={index}>{item}</Text>
       ))}
