@@ -4,7 +4,7 @@ import View from 'react-native-ui-lib/view';
 import Text from 'react-native-ui-lib/text';
 
 import Firebase from "./Firebase";
-import { getAuth, signInWithEmailAndPassword}
+import { getAuth, signInWithEmailAndPassword} from "firebase/auth"
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect,useMemo,useState,createContext } from "react";
