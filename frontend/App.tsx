@@ -1,27 +1,33 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator } from "react-native";
 import View from 'react-native-ui-lib/view';
-import Text from 'react-native-ui-lib/text';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'
 
 import Firebase from "./Firebase";
-import { getAuth, signInWithEmailAndPassword} from "firebase/auth"
-import { getFirestore } from "firebase/firestore";
-import { collection, getDocs } from "firebase/firestore";
-import { useEffect,useMemo,useState,createContext } from "react";
-import React from "react";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithCredential } from "firebase/auth"
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import React, { useEffect,useMemo,useState } from "react";
+import mainContext from "./context/Context";
+import LoginScreen from "./screens/LoginScreen";
+import HomeScreen from "./screens/HomeScreen";
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(Firebase);
 
-const mainContext = createContext([])
-
-const [userLogged, setUserLogged] = useState(false)
-const [userProfile, setUserProfile] = useState(null)
-const [isLoading, setIsLoading] = useState(true)
-
 const App = () => {
-  const [items, setItems] = useState([]);
 
+  const [items, setItems] = useState(null);
+  const [userLogged, setUserLogged] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const AppStack = createStackNavigator();
+
+  GoogleSignin.configure({
+    webClientId: '485483637136-r120arffkjkf6makhoret3v3pctkvhuc.apps.googleusercontent.com'
+  })
+  
   useEffect(() => {
     const querySnapshot = getDocs(collection(db, "testData"))
       .then(snapshot => {
@@ -37,36 +43,62 @@ const App = () => {
       });
   }, []);
 
+  const auth = getAuth(Firebase)
+
+  const onGoogleButtonPress = async () => {
+    setIsLoading(true);
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    const { idToken } = await GoogleSignin.signIn();
+    const googleCredential = GoogleAuthProvider.credential(idToken)
+    signInWithCredential(auth, googleCredential)
+    setUserLogged(true)
+    setIsLoading(false);
+  };
+
   const mainC = useMemo(
     () => ({
-      userProfile: { userProfile },
-      handleLogin: (email, password) => {
-        setIsLoading(true);
-        
-        setIsLoading(false);
-      }
-
-    }), [])
+        items: { items },
+        userProfile: { userProfile },
+        handleLogin: (email: string, password: string) => {
+          setIsLoading(true);
+          signInWithEmailAndPassword(auth, email, password).catch((error) => {
+            console.log(error);
+          })
+          setUserLogged(true);
+          setIsLoading(false);
+        },
+        handleGoogleLogin: () => {
+          onGoogleButtonPress();
+        }
+      }), 
+      []
+    );
   
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <ActivityIndicator animating={true} size="large" />
+      </View>
+    )
+  }
 
   return (
-    <View style={styles.container}>
-      <Text text30>All Items:</Text>
-      {items.map((item, index) => (
-        <Text key={index}>{item}</Text>
-      ))}
-      <StatusBar style="auto" />
-    </View>
+    <mainContext.Provider value={mainC}>
+      <NavigationContainer>
+        <AppStack.Navigator initialRouteName="login">
+          { userLogged == false ? (
+            <>
+            <AppStack.Screen name="Login" component={LoginScreen} />
+            </>
+          ) : (
+            <>
+            <AppStack.Screen name="Home" component={HomeScreen} />
+            </>
+          )}
+        </AppStack.Navigator>
+      </NavigationContainer>
+    </mainContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-});
 
 export default App;
