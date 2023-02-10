@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react'
-import { View, Button, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native'
+import { View, Button, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Image, Text} from 'react-native'
 import mainContext from '../context/Context'
 
 const LoginScreen = ({navigation}) => {
     const { handleLogin } = useContext(mainContext)
     const { handleGoogleLogin } = useContext(mainContext)
+    const { userProfile } = useContext(mainContext)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -29,11 +30,11 @@ const LoginScreen = ({navigation}) => {
                 </View>
                 <Button
                     title='Login'
-                    onPress={() => handleLogin(email, password)}
+                    onPress={ () => handleLogin(email, password) }
                 />
                 <Button
-                    title='Login Using Google'
-                    onPress={() => handleGoogleLogin()}
+                    title="Sign In Using Google"
+                    onPress={ () => handleGoogleLogin() }
                 />
             </View>
         </TouchableWithoutFeedback>
@@ -51,10 +52,14 @@ const styles = StyleSheet.create({
         width: '80%',
         marginBottom: 20
     },
-    googleLogin: {
-        backgroundColor: '#338FFF',
-        marginTop: 20
-    }
+    userProfile: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    profilePicture: {
+        width: 50,
+        height: 50
+      }
 });
 
 export default LoginScreen;
