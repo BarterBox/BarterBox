@@ -10,6 +10,9 @@ import React, { useEffect,useMemo,useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 
 import Firebase from "./Firebase";
+import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './screens/HomeScreen';
+import mainContext from './context/Context';
 
 // Initialize Cloud Firestore and get a reference to the service
 
@@ -29,21 +32,6 @@ const App = () => {
   //   redirectUri: "https://auth.expo.io/@dan-whelan/barter-box"
   // })
   
-  useEffect(() => {
-    const querySnapshot = getDocs(collection(db, "testData"))
-      .then(snapshot => {
-        const data = [];
-        snapshot.forEach(doc => {
-          console.log(doc.id, " => ", doc.data().Item);
-          data.push(doc.data().Item);
-        });
-        setItems(data);
-      })
-      .catch(error => {
-        console.log("Error getting documents: ", error);
-      });
-  }, []);
-
   // useEffect(() => {
   //     if(response?.type === "success") {
   //       setAccessToken(response.authentication.accessToken);
@@ -77,18 +65,24 @@ const App = () => {
           })
           setUserLogged(true);
         },
+        handleGoogleLogin: () => null
       }), 
       []
     );
 
+  const Stack = createNativeStackNavigator();
+
   return (
-    <View style={styles.container}>
-      <Text text30>All Items:</Text>
-        {items?.map((item, index) => (
-          <Text key={index}>{item}</Text>
-        ))}
-      <StatusBar style="auto" />
-    </View>
+    <mainContext.Provider
+    value={mainC}>
+      <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    </mainContext.Provider>
+    
   );
 };
 

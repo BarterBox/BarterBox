@@ -4,7 +4,7 @@ import mainContext from '../context/Context'
 
 const LoginScreen = ({navigation}) => {
     const { handleLogin } = useContext(mainContext)
-    const { handleGoogleLogin } = useContext(mainContext)
+    // const { handleGoogleLogin } = useContext(mainContext)
     const { userProfile } = useContext(mainContext)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -32,10 +32,10 @@ const LoginScreen = ({navigation}) => {
                     title='Login'
                     onPress={ () => handleLogin(email, password) }
                 />
-                <Button
+                {/* <Button
                     title="Sign In Using Google"
                     onPress={ () => handleGoogleLogin() }
-                />
+                /> */}
             </View>
         </TouchableWithoutFeedback>
     )
