@@ -2,12 +2,15 @@ import View from 'react-native-ui-lib/view';
 import Text from 'react-native-ui-lib/text';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
-
-import Firebase from "./Firebase";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import React, { useEffect,useMemo,useState } from "react";
 import * as WebBrowser from "expo-web-browser";
+
+import Firebase from "./Firebase";
+
 // Initialize Cloud Firestore and get a reference to the service
 
 const db = getFirestore(Firebase);
