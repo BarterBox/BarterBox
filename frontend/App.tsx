@@ -1,4 +1,3 @@
-import { ActivityIndicator } from "react-native";
 import View from 'react-native-ui-lib/view';
 import Text from 'react-native-ui-lib/text';
 import { StatusBar } from "expo-status-bar";
@@ -8,9 +7,9 @@ import Firebase from "./Firebase";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import React, { useEffect,useMemo,useState } from "react";
-import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 // Initialize Cloud Firestore and get a reference to the service
+
 const db = getFirestore(Firebase);
 
 WebBrowser.maybeCompleteAuthSession()
@@ -22,10 +21,10 @@ const App = () => {
   const [userProfile, setUserProfile] = useState(null);
 
   const [accessToken, setAccessToken] = useState<String | null>(null)
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: "485483637136-oi3vgvvl3p47oa1vm3m44rn538hg0fvf.apps.googleusercontent.com",
-    redirectUri: "https://auth.expo.io/@dan-whelan/barter-box"
-  })
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   expoClientId: "485483637136-oi3vgvvl3p47oa1vm3m44rn538hg0fvf.apps.googleusercontent.com",
+  //   redirectUri: "https://auth.expo.io/@dan-whelan/barter-box"
+  // })
   
   useEffect(() => {
     const querySnapshot = getDocs(collection(db, "testData"))
@@ -42,28 +41,29 @@ const App = () => {
       });
   }, []);
 
-  useEffect(() => {
-      if(response?.type === "success") {
-        setAccessToken(response.authentication.accessToken);
-      }
-  }, [response])
+  // useEffect(() => {
+  //     if(response?.type === "success") {
+  //       setAccessToken(response.authentication.accessToken);
+  //     }
+  // }, [response])
 
-  const getUserData = async () => {
-    console.log("here")
-    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${accessToken}`}
-    })
+  // const getUserData = async () => {
+  //   console.log("here")
+  //   let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+  //     headers: { Authorization: `Bearer ${accessToken}`}
+  //   })
 
-    userInfoResponse.json().then((data) => {
-      setUserProfile(data)
-    })
-  }
+  //   userInfoResponse.json().then((data) => {
+  //     setUserProfile(data)
+  //   })
+  // }
+
   const auth = getAuth(Firebase)
 
-  const googleLogin = () => {
-    promptAsync({showInRecents: true})
-    setUserLogged(true)
-  }
+  // const googleLogin = () => {
+  //   promptAsync({showInRecents: true})
+  //   setUserLogged(true)
+  // }
 
   const mainC = useMemo(
     () => ({
@@ -74,9 +74,6 @@ const App = () => {
           })
           setUserLogged(true);
         },
-        handleGoogleLogin: () => {
-          googleLogin()
-        }
       }), 
       []
     );
@@ -88,7 +85,7 @@ const App = () => {
           <Text key={index}>{item}</Text>
         ))}
       <StatusBar style="auto" />
-  </View>
+    </View>
   );
 };
 
