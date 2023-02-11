@@ -1,11 +1,9 @@
 import React, { useState, useContext } from 'react'
 import { View, Button, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Image, Text} from 'react-native'
-import mainContext from '../context/Context'
+import { AuthContext } from '../navigation/AuthProvider';
 
 const LoginScreen = ({navigation}) => {
-    const { handleLogin } = useContext(mainContext)
-    // const { handleGoogleLogin } = useContext(mainContext)
-    const { userProfile } = useContext(mainContext)
+    const { login } = useContext(AuthContext)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -30,7 +28,7 @@ const LoginScreen = ({navigation}) => {
                 </View>
                 <Button
                     title='Login'
-                    onPress={ () => handleLogin(email, password) }
+                    onPress={ () => login(email, password) }
                 />
                 {/* <Button
                     title="Sign In Using Google"
@@ -50,6 +48,7 @@ const styles = StyleSheet.create({
 	},
     inputContainer: {
         width: '80%',
+        height: 20,
         marginBottom: 20
     },
     userProfile: {
