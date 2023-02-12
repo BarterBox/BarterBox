@@ -3,11 +3,12 @@
 */
 
 import React from 'react'
-import View from 'react-native-ui-lib/view';
-import Text from 'react-native-ui-lib/text';
+import { View, Text } from 'react-native';
+
 import { StyleSheet } from 'react-native';
 
-const SignupScreen = () => {
+export default function SignupScreen ({navigation})  {
+
     return (
         <View style={styles.container}>
             <Text>Sorry, there is no signup screen yet</Text>
@@ -23,5 +24,3 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 });
-
-export default SignupScreen;

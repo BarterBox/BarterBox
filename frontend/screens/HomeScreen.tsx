@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import View from 'react-native-ui-lib/view';
-import Text from 'react-native-ui-lib/text';
+import { View, Text } from 'react-native';
 import { StyleSheet } from 'react-native';
 
 const HomeScreen = () => {

@@ -1,19 +1,24 @@
 import React, { useState, useContext } from 'react'
 import { View, Button, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Image, Text} from 'react-native'
 import { AuthContext } from '../navigation/AuthProvider';
+import { Platform } from 'react-native';
+
+function dismissKeyboard() { if (Platform.OS != "web"){ Keyboard.dismiss(); } }
 
 const LoginScreen = ({navigation}) => {
-    const { login } = useContext(AuthContext)
+    //const { login } = useContext(AuthContext)
+    const login = (email, password) => null
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     return(
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
             <View style={styles.container}>
                 <View style={styles.inputContainer}>
                     <TextInput 
                         placeholder='Email Address'
                         onChangeText={(email) => setEmail(email)}
+                        numberOfLines={1}
                         value={email}
                         keyboardType={'email-address'}
                     />
@@ -49,7 +54,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: '80%',
         height: 20,
-        marginBottom: 20
+        marginBottom: 20,
     },
     userProfile: {
         alignItems: 'center',
