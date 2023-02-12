@@ -8,17 +8,16 @@ import { AuthContext } from './AuthProvider';
 import Loading from '../components/Loading';
 import Firebase from '../Firebase';
 
-const auth = getAuth(Firebase)
-
 export default function Routes() {
+    const auth = getAuth(Firebase)
     const { user, setUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [initializing, setInitializing] = useState(true);
     // Handle user state changes
     function onAuthChanged(user) {
-      setUser(user);
-      if (initializing) setInitializing(false);
-      setLoading(false);
+        setUser(user);
+        if (initializing) setInitializing(false);
+        setLoading(false);
     }
     useEffect(() => {
       const subscriber = onAuthStateChanged(auth, onAuthChanged);

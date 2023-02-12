@@ -6,6 +6,7 @@ const HomeScreen = () => {
     return (
         <View style={styles.container}>
             <Text>You Have Successfully Logged In</Text>
+			<Text>Here we could add a logout button</Text>
         </View>
     );
 }

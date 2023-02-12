@@ -4,11 +4,10 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, si
 import Firebase from '../Firebase';
 import { AuthContextType } from '../@types/app';
 
-const auth = getAuth(Firebase)
-
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }) => {
+    const auth = getAuth(Firebase)
     const [user, setUser] = useState(null);
     const authContextValue = useMemo(() => ({
         user,
@@ -34,7 +33,7 @@ export const AuthProvider = ({ children }) => {
             console.error(e);
           }
         }
-      }), [])
+      }), [user])
     return (
       <AuthContext.Provider
         value={authContextValue}

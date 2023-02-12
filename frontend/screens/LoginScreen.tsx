@@ -6,8 +6,7 @@ import { Platform } from 'react-native';
 function dismissKeyboard() { if (Platform.OS != "web"){ Keyboard.dismiss(); } }
 
 const LoginScreen = ({navigation}) => {
-    //const { login } = useContext(AuthContext)
-    const login = (email, password) => null
+    const { login } = useContext(AuthContext)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -27,6 +26,7 @@ const LoginScreen = ({navigation}) => {
                     <TextInput 
                         placeholder='Password'
                         onChangeText={(password) => setPassword(password)}
+                        numberOfLines={1}
                         value={password}
                         secureTextEntry={true}
                     />
