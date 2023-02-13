@@ -1,12 +1,17 @@
-import React, { useContext } from 'react';
+/*
+    Dummy signup screen.
+*/
+
+import React from 'react'
 import { View, Text } from 'react-native';
+
 import { StyleSheet } from 'react-native';
 
-const HomeScreen = () => {
+export default function SignupScreen ({navigation})  {
+
     return (
         <View style={styles.container}>
-            <Text>You Have Successfully Logged In</Text>
-			<Text>Here we could add a logout button</Text>
+            <Text>Sorry, there is no signup screen yet</Text>
         </View>
     );
 }
@@ -19,5 +24,3 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 });
-
-export default HomeScreen;
