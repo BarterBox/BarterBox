@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button, Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
+import { AuthContext } from '../navigation/AuthProvider';
 
 const HomeScreen = () => {
+	const { logout } = useContext(AuthContext);
     return (
         <View style={styles.container}>
             <Text>You Have Successfully Logged In</Text>
-			<Text>Here we could add a logout button</Text>
+			<Button title="Logout" onPress={() => {logout(); Alert.alert("You have successfully logged out.")}}/>
         </View>
     );
 }
