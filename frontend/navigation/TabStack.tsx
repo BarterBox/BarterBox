@@ -1,6 +1,8 @@
 import React from 'react';
 import HomeStack from './HomeStack';
 import ProfileStack from './ProfileStack';
+import MarketplaceStack from './MarketplaceStack';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const Tab = createBottomTabNavigator();
@@ -15,7 +17,11 @@ export default function TabStack() {
                 iconName = focused
                     ? 'ios-information-circle'
                     : 'ios-information-circle-outline';
-                } else if (route.name === 'Profile') {
+                }
+                else if (route.name === 'Marketplace') {
+                  iconName = focused ? 'ios-apps' : 'ios-apps';
+                }
+                else if (route.name === 'Profile') {
                 iconName = focused ? 'ios-people' : 'ios-people';
                 }
                 return <Ionicons name={iconName} size={size} color={color} />;
@@ -23,6 +29,7 @@ export default function TabStack() {
         })}
         >
         <Tab.Screen name='Home' component={HomeStack} />
+        <Tab.Screen name='Marketplace' component={MarketplaceStack} />
         <Tab.Screen name='Profile' component={ProfileStack} />
     </Tab.Navigator>
   );
