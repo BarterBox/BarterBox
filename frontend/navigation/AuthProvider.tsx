@@ -9,9 +9,12 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }) => {
     const auth = getAuth(Firebase)
     const [user, setUser] = useState(null);
+    const [loginNotSignup, setLoginNotSignup] = useState(true)
     const authContextValue = useMemo(() => ({
         user,
         setUser,
+        loginNotSignup,
+        setLoginNotSignup,
         login: async (email, password) => {
           try {
             await signInWithEmailAndPassword(auth, email, password);
@@ -32,6 +35,9 @@ export const AuthProvider = ({ children }) => {
           } catch (e) {
             console.error(e);
           }
+        },
+        logOrSignup: () => {
+          loginNotSignup === true ? setLoginNotSignup(false) : setLoginNotSignup(true)
         }
       }), [user])
     return (
