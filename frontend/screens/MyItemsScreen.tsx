@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-import { View, Text} from 'react-native';
+import { View, Text, Button, Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { AuthContext } from '../navigation/AuthProvider';
 
-const HomeScreen = () => {
+const MyItemsScreen = () => {
 	const { logout } = useContext(AuthContext);
     return (
         <View style={styles.container}>
-            <Text>You Have Successfully Logged In</Text>
+            <Text>My Items </Text>
         </View>
     );
 }
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default HomeScreen;
+export default MyItemsScreen;
