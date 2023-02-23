@@ -43,7 +43,6 @@ const NewItemForm = ({ onSubmit }) => {
             const uuid = uuidv4();
             const imageRef = storage.ref().child(`images/${uuid}`);
             await imageRef.put(blob);
-            await imageRef.put(blob);
             const imageUrl = await imageRef.getDownloadURL();
             // Add the item data to Firestore
 
