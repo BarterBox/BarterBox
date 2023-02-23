@@ -1,21 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, Image, Button, StyleSheet, Pressable, Alert } from 'react-native';
+import { View, Text, TextInput, Image, TouchableWithoutFeedback, Button, StyleSheet, Pressable, Alert, Keyboard } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { getFirestore, addDoc, doc, collection, serverTimestamp } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
+import { Platform } from 'react-native';
 
-import {storage} from '../../Firebase';
+import { storage } from '../../Firebase';
 import MultilineInput from '../MultilineInput';
-import {app} from '../../Firebase';
+import { app } from '../../Firebase';
 import { AuthContext } from '../../navigation/AuthProvider';
+
+function dismissKeyboard() { if (Platform.OS != "web") { Keyboard.dismiss(); } }
 const db = getFirestore(app);
 
-
-const NewItemForm = ({onSubmit}) => {
+const NewItemForm = ({ onSubmit }) => {
     const [itemName, setItemName] = useState('');
     const [itemDescription, setItemDescription] = useState('');
     const [image, setImage] = useState(null);
-    const {user} = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -35,36 +37,36 @@ const NewItemForm = ({onSubmit}) => {
 
     const handleAddItem = async () => {
         try {
-          // Upload the image to Firebase Storage
-          const response = await fetch(image);
-          const blob = await response.blob();
-          const uuid = uuidv4();
+            // Upload the image to Firebase Storage
+            const response = await fetch(image);
+            const blob = await response.blob();
+            const uuid = uuidv4();
             const imageRef = storage.ref().child(`images/${uuid}`);
             await imageRef.put(blob);
-          await imageRef.put(blob);
-          const imageUrl = await imageRef.getDownloadURL();
-          // Add the item data to Firestore
-          
-          const itemsRef = collection(db, 'items');
-          await addDoc(itemsRef, {
-            heading: itemName,
-            description: itemDescription,
-            image_url: imageUrl,
-            owner: user.uid,
-            date_uploaded: serverTimestamp(),
-          })
-        
-          // Reset the form
-          setItemName('');
-          setItemDescription('');
-          setImage(null);
-          Alert.alert('Success', 'Item was uploaded correctly.');
-          onSubmit()
+            await imageRef.put(blob);
+            const imageUrl = await imageRef.getDownloadURL();
+            // Add the item data to Firestore
+
+            const itemsRef = collection(db, 'items');
+            await addDoc(itemsRef, {
+                heading: itemName,
+                description: itemDescription,
+                image_url: imageUrl,
+                owner: user.uid,
+                date_uploaded: serverTimestamp(),
+            })
+
+            // Reset the form
+            setItemName('');
+            setItemDescription('');
+            setImage(null);
+            Alert.alert('Success', 'Item was uploaded correctly.');
+            onSubmit()
         } catch (error) {
-          console.log(error);
-          Alert.alert('Error', 'An error occurred while adding the item.');
+            console.log(error);
+            Alert.alert('Error', 'An error occurred while adding the item.');
         }
-      };
+    };
 
     const handleSubmit = () => {
         // handle submission logic here
@@ -72,30 +74,33 @@ const NewItemForm = ({onSubmit}) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text>Title</Text>
-            <TextInput
-                style={styles.textInput}
-                value={itemName}
-                onChangeText={text => setItemName(text)}
-            />
-            <Text>Description:</Text>
-            <MultilineInput
-                placeholder="Enter the item description"
-                limit={255}
-                onChangeHandler={text => setItemDescription(text)} />
-            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-            <Pressable
-                style={styles.button}
-                onPress={pickImage}>
-                <Text style={styles.pressableText}>Add Image</Text>
-            </Pressable>
-            <Pressable
-                style={styles.submitButton}
-                onPress={handleAddItem} >
-                <Text style={styles.pressableText}>Submit</Text>
-            </Pressable>
-        </View>
+        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
+            <View style={styles.container}>
+                <Text>Title</Text>
+                <TextInput
+                    style={styles.textInput}
+                    value={itemName}
+                    onChangeText={text => setItemName(text)}
+                />
+                <Text>Description:</Text>
+                <MultilineInput
+                    placeholder="Enter the item description"
+                    limit={255}
+                    onChangeHandler={text => setItemDescription(text)} />
+                {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+                <Pressable
+                    style={styles.button}
+                    onPress={pickImage}>
+                    <Text style={styles.pressableText}>Add Image</Text>
+                </Pressable>
+                <Pressable
+                    style={styles.submitButton}
+                    onPress={handleAddItem} >
+                    <Text style={styles.pressableText}>Submit</Text>
+                </Pressable>
+            </View>
+        </TouchableWithoutFeedback>
+
     );
 };
 

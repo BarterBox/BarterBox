@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		backgroundColor: "#fff",
-		padding: 20
+		padding: 20,
+		paddingTop: 40,
 	},
 });
 
