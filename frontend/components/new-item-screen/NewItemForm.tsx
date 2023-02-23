@@ -49,10 +49,10 @@ const NewItemForm = () => {
                 <Text style={styles.pressableText}>Add Image</Text>
             </Pressable>
             <Pressable
-                style={styles.button}
+                style={styles.submitButton}
                 onPress={handleSubmit} >
                 <Text style={styles.pressableText}>Submit</Text>
-            </ Pressable>
+            </Pressable>
         </View>
     );
 };
@@ -62,6 +62,7 @@ export default NewItemForm;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
     },
     textInput: {
         width: "100%",
@@ -80,6 +81,18 @@ const styles = StyleSheet.create({
         elevation: 3,
         backgroundColor: '#007AFF',
         marginTop: 10,
+    },
+    submitButton: {
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: '#007AFF',
+        marginTop: 10,
+        alignSelf: "flex-end",
+        position: 'absolute',
+        bottom: 35
     },
     pressableText: {
         color: 'white'
