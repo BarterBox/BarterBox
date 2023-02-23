@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import { View, Text } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { AuthContext } from '../navigation/AuthProvider';
 
-const MarketplaceScreen1 = () => {
+const MarketplaceScreen = () => {
 	const { logout } = useContext(AuthContext);
     return (
         <View style={styles.container}>
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default MarketplaceScreen1;
+export default MarketplaceScreen;
