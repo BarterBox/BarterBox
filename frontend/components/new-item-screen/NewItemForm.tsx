@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Image, Button, StyleSheet, Pressable } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import MultilineInput from '../MultilineInput';
 
 const NewItemForm = () => {
     const [itemName, setItemName] = useState('');
@@ -37,21 +38,20 @@ const NewItemForm = () => {
                 onChangeText={text => setItemName(text)}
             />
             <Text>Description:</Text>
-            <TextInput
-                style={styles.textInput}
-                value={itemDescription}
-                onChangeText={text => setItemDescription(text)}
-            />
+            <MultilineInput
+                placeholder="Enter the item description"
+                limit={255}
+                onChangeHandler={text => setItemDescription(text)} />
             {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
             <Pressable
                 style={styles.button}
                 onPress={pickImage}>
-                <Text style={styles.pressableText}>UPLOAD</Text>
+                <Text style={styles.pressableText}>Add Image</Text>
             </Pressable>
             <Pressable
                 style={styles.button}
                 onPress={handleSubmit} >
-                <Text style={styles.pressableText}>SUBMIT</Text>
+                <Text style={styles.pressableText}>Submit</Text>
             </ Pressable>
         </View>
     );
@@ -66,8 +66,10 @@ const styles = StyleSheet.create({
     textInput: {
         width: "100%",
         height: "30px",
+        borderColor: '#999',
         borderWidth: 2,
         borderRadius: 10,
+        marginBottom: 10,
     },
     button: {
         alignItems: 'center',
