@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "BarterBox",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,6 +30,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["@react-native-google-signin/google-signin"]
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1109e6e6-a0fc-4609-a17a-99ab65ac354d"
+      }
+    },
+    "owner": "felixx_be"
   }
 }
