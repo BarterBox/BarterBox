@@ -5,11 +5,11 @@ import Heading1 from '../components/Heading1';
 import NewItemForm from '../components/new-item-screen/NewItemForm';
 
 
-const NewItemScreen = () => {
+const NewItemScreen = ({navigation}) => {
     return (
 		<View style={styles.container}>
 			<Heading1 text="New Item" />
-			<NewItemForm />
+			<NewItemForm onSubmit={() => navigation.goBack()}/>
 		</View>
     );
 }

@@ -2,9 +2,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, Image, Button, Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { AuthContext } from '../navigation/AuthProvider';
-import  Firebase from '../Firebase';
+import  {app} from '../Firebase';
 import { getFirestore, getDoc, doc } from "firebase/firestore";
-const db = getFirestore(Firebase);
+const db = getFirestore(app);
 
 const ProfileScreen = () => {
 	const { user, logout } = useContext(AuthContext);
@@ -26,6 +26,7 @@ const ProfileScreen = () => {
 			console.log("Error getting documents: ", error);
 		});
 	}, []);
+
     return (
         <View style={styles.container}>
 			<Image
