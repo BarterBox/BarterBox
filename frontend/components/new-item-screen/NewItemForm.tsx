@@ -29,7 +29,7 @@ const NewItemForm = () => {
     };
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text>Title</Text>
             <TextInput
                 style={styles.textInput}
@@ -46,12 +46,12 @@ const NewItemForm = () => {
             <Pressable
                 style={styles.button}
                 onPress={pickImage}>
-                <Text>UPLOAD</Text>
+                <Text style={styles.pressableText}>UPLOAD</Text>
             </Pressable>
             <Pressable
                 style={styles.button}
                 onPress={handleSubmit} >
-                <Text>SUBMIT</Text>
+                <Text style={styles.pressableText}>SUBMIT</Text>
             </ Pressable>
         </View>
     );
@@ -60,6 +60,9 @@ const NewItemForm = () => {
 export default NewItemForm;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     textInput: {
         width: "100%",
         height: "30px",
@@ -74,6 +77,9 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         backgroundColor: '#007AFF',
-        marginTop: 10
+        marginTop: 10,
+    },
+    pressableText: {
+        color: 'white'
     }
 });
