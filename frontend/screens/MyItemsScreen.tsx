@@ -4,10 +4,10 @@ import { StyleSheet } from 'react-native';
 import { AuthContext } from '../navigation/AuthProvider';
 
 const MyItemsScreen = () => {
-	const { logout } = useContext(AuthContext);
     return (
         <View style={styles.container}>
             <Text>My Items </Text>
+			<Button title="+" />
         </View>
     );
 }
