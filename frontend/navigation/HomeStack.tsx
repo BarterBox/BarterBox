@@ -7,6 +7,7 @@ import MyItemsScreen from '../screens/MyItemsScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MyItemsStack from './ItemsStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,11 +34,10 @@ export default function HomeStack() {
                 }
                 return <Ionicons name={iconName} size={size} color={color} />;
             },
-        })}
-        >
+        })}>
         <Tab.Screen name='Home' component={HomeScreen} />
         <Tab.Screen name='Marketplace' component={MarketplaceScreen1} />
-        <Tab.Screen name='Items' component={MyItemsScreen} />
+        <Tab.Screen name='Items' component={MyItemsStack} />
         <Tab.Screen name='Profile' component={ProfileScreen} />
     </Tab.Navigator>
   );

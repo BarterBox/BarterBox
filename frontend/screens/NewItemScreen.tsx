@@ -1,19 +1,13 @@
 import React from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
+import NewItemForm from '../components/new-item-screen/NewItemForm';
 
 
-
-const MyItemsScreen = ({navigation}) => {
-
-	const handleAddItem = () => {
-		navigation.navigate('NewItem')
-	}
-
+const NewItemScreen = () => {
     return (
         <View style={styles.container}>
-            <Text>My Items </Text>
-			<Button title="+" onPress={handleAddItem} />
+            <NewItemForm />
         </View>
     );
 }
@@ -27,4 +21,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default MyItemsScreen;
+export default NewItemScreen
