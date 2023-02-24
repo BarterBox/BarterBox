@@ -7,6 +7,7 @@ import MyItemsScreen from '../screens/MyItemsScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MyItemsStack from './ItemsStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,16 +29,15 @@ export default function HomeStack() {
                 else if (route.name === 'Profile') {
                 iconName = focused ? 'ios-people' : 'ios-people-outline';
                 }
-                else if (route.name === 'MyItems') {
+                else if (route.name === 'Items') {
                   iconName = focused ? 'pricetag' : 'pricetag-outline';
                 }
                 return <Ionicons name={iconName} size={size} color={color} />;
             },
-        })}
-        >
+        })}>
         <Tab.Screen name='Home' component={HomeScreen} />
         <Tab.Screen name='Marketplace' component={MarketplaceScreen1} />
-        <Tab.Screen name='MyItems' component={MyItemsScreen} />
+        <Tab.Screen name='Items' component={MyItemsStack} />
         <Tab.Screen name='Profile' component={ProfileScreen} />
     </Tab.Navigator>
   );

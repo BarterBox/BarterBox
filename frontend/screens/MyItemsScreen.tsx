@@ -1,13 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
-import { AuthContext } from '../navigation/AuthProvider';
 
-const MyItemsScreen = () => {
-	const { logout } = useContext(AuthContext);
+
+
+const MyItemsScreen = ({navigation}) => {
+
+	const handleAddItem = () => {
+		navigation.navigate('NewItem')
+	}
+
     return (
         <View style={styles.container}>
             <Text>My Items </Text>
+			<Button title="+" onPress={handleAddItem} />
         </View>
     );
 }
