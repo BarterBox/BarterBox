@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "barterbox",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "@types/react-native": "~0.70.6",
     "expo": "~47.0.12",
     "expo-auth-session": "^3.8.0",
+    "expo-image-picker": "^14.1.0",
     "expo-random": "^13.0.0",
     "expo-status-bar": "~1.4.2",
     "expo-web-browser": "^12.0.0",
