@@ -23,8 +23,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF",
-        "googleServicesFile": "./google-services.json"
+        "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
@@ -38,6 +37,6 @@
         "projectId": "1109e6e6-a0fc-4609-a17a-99ab65ac354d"
       }
     },
-    "owner": "felixx_be"
+    "owner": "barterbox"
   }
 }
