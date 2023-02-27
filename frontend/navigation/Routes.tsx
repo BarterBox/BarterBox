@@ -6,10 +6,10 @@ import AuthStack from './AuthStack';
 import HomeStack from './HomeStack';
 import { AuthContext } from './AuthProvider';
 import Loading from '../components/Loading';
-import Firebase from '../Firebase';
+import {app} from '../Firebase';
 
 export default function Routes() {
-    const auth = getAuth(Firebase)
+    const auth = getAuth(app)
     const { user, setUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [initializing, setInitializing] = useState(true);
