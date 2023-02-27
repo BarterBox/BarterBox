@@ -1,13 +1,13 @@
 import React, { createContext, useState, useMemo } from 'react';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth"
 
-import Firebase from '../Firebase';
+import { app } from '../Firebase';
 import { AuthContextType } from '../@types/app';
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }) => {
-    const auth = getAuth(Firebase)
+    const auth = getAuth(app)
     const [user, setUser] = useState(null);
     const authContextValue = useMemo(() => ({
         user,
