@@ -4,7 +4,7 @@ import { AuthContext } from '../navigation/AuthProvider';
 import DismissKeyboard from '../components/DismissKeyboard';
 
 const LoginScreen = ({navigation}) => {
-    const { login, logOrSignup } = useContext(AuthContext)
+    const { login } = useContext(AuthContext)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -35,7 +35,7 @@ const LoginScreen = ({navigation}) => {
                 />
                 <Button
                     title="Don't have an account? Sign Up Here"
-                    onPress={ () => logOrSignup() }
+                    onPress={ () => navigation.navigate('Signup') }
                 />
             </View>
         </TouchableWithoutFeedback>

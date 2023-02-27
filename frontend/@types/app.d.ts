@@ -7,10 +7,7 @@ export type MainContextType = {
 export type AuthContextType = {
     user: any,
     setUser: any,
-    loginNotSignup: any,
-    setLoginNotSignup: any,
     login: (email, password) => Promise<void>,
     register: (email, password) => Promise<void>,
     logout: () => Promise<void>,
-    logOrSignup: () => void
 }
