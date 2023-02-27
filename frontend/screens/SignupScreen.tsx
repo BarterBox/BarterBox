@@ -5,7 +5,7 @@ import DismissKeyboard from '../components/DismissKeyboard';
 import { AuthContext } from '../navigation/AuthProvider';
 
 
-const SignUpScreen = () => {
+const SignUpScreen = ({navigation}) => {
     const { register } = useContext(AuthContext);
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('');
@@ -38,13 +38,16 @@ const SignUpScreen = () => {
                         onChangeText={ (password) => setPassword(password) }
                         numberOfLines={ 1 }
                         value={ password }
-                        keyboardType={ 'default' }
                         secureTextEntry={ true }
                     />
                 </View>
                 <Button
                     title='Sign Up'
                     onPress={ () => register(email, password) }
+                />
+                <Button
+                    title='Already a member? Log In Here'
+                    onPress={ () => navigation.navigate('Login') }
                 />
             </View>
         </TouchableWithoutFeedback>
