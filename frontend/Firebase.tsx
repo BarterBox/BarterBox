@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/storage'
 import {where, query, collection, doc, getDoc, getDocs, getFirestore} from "firebase/firestore";
-import WhereFilterOp = firebase.firestore.WhereFilterOp;
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDuCfCrzKwNr76dXBYy0A1ZQNigj-rz2aQ",
@@ -35,7 +34,7 @@ export async function getFirestoreDocumentData(path: string) {
 	})
 }
 
-export async function getFirestoreCollectionDataWhere(path: string, field: string, operator: WhereFilterOp, value: string) {
+export async function getFirestoreCollectionDataWhere(path: string, field: string, operator: firebase.firestore.WhereFilterOp, value: string) {
 	const querySnapshot = await getDocs(query(collection(db, path), where(field, operator, value)));
 	return querySnapshot.docs.map(doc => doc.data())
 }
