@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, Text, ToastAndroid} from 'react-native';
+import {View, ToastAndroid, StyleSheet} from 'react-native';
 import {AuthContext} from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
 import {getFirestoreCollectionDataWhere} from "../Firebase";
-import CachedImage from 'react-native-expo-cached-image';
+import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
 
 const MarketplaceScreen = () => {
     const {user} = useContext(AuthContext);
@@ -16,20 +16,41 @@ const MarketplaceScreen = () => {
     }
 
     useEffect(() => {
-        fetchItems().then(() => ToastAndroid.show("Items fetched", ToastAndroid.SHORT));
+        fetchItems().then(() => {
+            ToastAndroid.show("Items fetched", ToastAndroid.SHORT)
+        });
     }, []);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Heading1 text="Marketplace"/>
-            {items.map((item, index) => (
-                <View key={index}>
-                    <CachedImage source={{uri: item.image_url}}/>
-                    <Text>{item.heading}</Text>
-                </View>
-            ))}
+            <View style={styles.itemsContainer}>
+                {items.map((item, index) => (
+                    <View key={index}>
+                        <MarketplaceItemCard item={item}/>
+                    </View>
+                ))}
+            </View>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: "#fff",
+        padding: 20,
+        paddingTop: 40,
+    },
+    itemsContainer: {
+        flex: 1,
+        backgroundColor: "#fff",
+        padding: 20,
+        paddingTop: 40,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    }
+});
 
 export default MarketplaceScreen;
