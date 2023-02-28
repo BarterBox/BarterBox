@@ -5,7 +5,6 @@ import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
 import {getFirestoreCollectionDataWhere} from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
-import {Toast} from "react-native-ui-lib";
 
 const MarketplaceScreen = () => {
     const {user} = useContext(AuthContext);
@@ -17,18 +16,13 @@ const MarketplaceScreen = () => {
     }
 
     useEffect(() => {
-        fetchItems().then(() => {
-            Toast.show({
-                text1: "Items fetched",
-                type: "success",
-            });
-        });
+        fetchItems()
     }, []);
 
     return (
         <View style={styles.container}>
             <Heading1 text="Marketplace"/>
-            <ScrollView style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
+            <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
                 {items.map((item, index) => {
                     return <MarketplaceItemCard key={index} item={item}/>
                 })}
