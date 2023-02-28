@@ -12,7 +12,6 @@ export default function MarketplaceItemCard({item}:{item: Item}) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: 'column',
         backgroundColor: "#d2d2d2",
         borderRadius: 10,
@@ -25,8 +24,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     image: {
-        width: 139,
-        height: 139,
+        width: 138,
+        height: 138,
         position: "absolute",
         top: 0,
         borderTopRightRadius: 10,

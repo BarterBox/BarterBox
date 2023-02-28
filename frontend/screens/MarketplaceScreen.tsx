@@ -41,12 +41,12 @@ const styles = StyleSheet.create({
     },
     itemsContainer: {
         flex: 1,
-        backgroundColor: "#fff"
     },
     scrollBarItemsContainer: {
         flexDirection: "row",
-        justifyContent: "center",
-        flexWrap: "wrap",
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        justifyContent: 'space-evenly',
     }
 });
 
