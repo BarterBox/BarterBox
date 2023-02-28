@@ -70,14 +70,6 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		marginTop: 20,
 	},
-	listitem: {
-		backgroundColor: "#0AF",
-		borderRadius: 10,
-		alignItems: "center",
-		justifyContent: "flex-start",
-		paddingVertical: 12,
-		paddingHorizontal: 32,
-	}
 });
 
 export default MyItemsScreen;
