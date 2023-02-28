@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, ToastAndroid, StyleSheet} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {AuthContext} from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
 import {getFirestoreCollectionDataWhere} from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
+import {Toast} from "react-native-ui-lib";
 
 const MarketplaceScreen = () => {
     const {user} = useContext(AuthContext);
@@ -17,20 +18,21 @@ const MarketplaceScreen = () => {
 
     useEffect(() => {
         fetchItems().then(() => {
-            ToastAndroid.show("Items fetched", ToastAndroid.SHORT)
+            Toast.show({
+                text1: "Items fetched",
+                type: "success",
+            });
         });
     }, []);
 
     return (
         <View style={styles.container}>
             <Heading1 text="Marketplace"/>
-            <View style={styles.itemsContainer}>
-                {items.map((item, index) => (
-                    <View key={index}>
-                        <MarketplaceItemCard item={item}/>
-                    </View>
-                ))}
-            </View>
+            <ScrollView style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
+                {items.map((item, index) => {
+                    return <MarketplaceItemCard key={index} item={item}/>
+                })}
+            </ScrollView>
         </View>
     );
 }
@@ -45,11 +47,12 @@ const styles = StyleSheet.create({
     },
     itemsContainer: {
         flex: 1,
-        backgroundColor: "#fff",
-        padding: 20,
-        paddingTop: 40,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        backgroundColor: "#fff"
+    },
+    scrollBarItemsContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        flexWrap: "wrap",
     }
 });
 
