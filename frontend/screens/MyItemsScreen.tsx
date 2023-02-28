@@ -5,6 +5,8 @@ import { AuthContext } from '../navigation/AuthProvider';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { app } from '../Firebase';
 
+import MarketplaceItemCard from '../components/marketplace-screen/MarketplaceItemCard';
+
 const database = getFirestore(app);
 
 const MyItemsScreen = ({ navigation }) => {
@@ -23,7 +25,13 @@ const MyItemsScreen = ({ navigation }) => {
 
 		const ownItemSelection = query(collection(database, "items"), where("owner", "==", user.uid));
 		getDocs(ownItemSelection)
-			.then((itemSnapshot) => { return itemSnapshot.docs.map((doc, index) => { return { id: `${index}`, heading: `${doc.data().heading}` }; }); })
+			.then((itemSnapshot) => {
+				return itemSnapshot.docs.map((doc, index) => {
+					const { date_uploaded, description, heading, image_url, owner } = doc.data();
+					const item = { date_uploaded, description, heading, image_url, owner };
+					return { id: `${index}`, item: item };
+				});
+			})
 			.then((items) => { setUserOwnItems(items); })
 			.catch((error) => { setUserOwnItems([]); });
 
@@ -33,29 +41,23 @@ const MyItemsScreen = ({ navigation }) => {
 		navigation.navigate('NewItem')
 	}
 
-	const ListItem = ({ name }) => (
-		<View style={styles.listitem}>
-			<Text>{name}</Text>
-		</View>
-	);
 	const Separator = ({ }) => {
 		return <View style={{ height: 5 }}></View>;
 	}
 	const Footer = <View style={{ height: 5 }}></View >
 	const KeyExtractFunction = item => item.id;
-	const RenderFunction = ({ item }) => <ListItem name={item.heading} />
+	const RenderFunction = ({ item }) => <MarketplaceItemCard item={item.item} />
 
 	return (
 		<View style={styles.container}>
-			<Heading1 text={`${userName}'s Own Items`}></Heading1>
+			<Heading1 text={`${userName}'s items`} />
 			<FlatList
 				data={userOwnItems}
 				ItemSeparatorComponent={Separator}
-				ListFooterComponent={Footer}
+				ListFooterComponent={<Button title="+" onPress={handleAddItem} />}
 				renderItem={RenderFunction}
 				keyExtractor={KeyExtractFunction}
 			/>
-			<Button title="+" onPress={handleAddItem} />
 		</View>
 	);
 }
@@ -65,18 +67,9 @@ const styles = StyleSheet.create({
 		overflow: "scroll",
 		backgroundColor: "#fff",
 		alignItems: "center",
-		justifyContent: "flex-start",
+		justifyContent: "center",
 		marginTop: 20,
-		marginBottom: 20
 	},
-	listitem: {
-		backgroundColor: "#0AF",
-		borderRadius: 10,
-		alignItems: "center",
-		justifyContent: "flex-start",
-		paddingVertical: 12,
-		paddingHorizontal: 32,
-	}
 });
 
 export default MyItemsScreen;
