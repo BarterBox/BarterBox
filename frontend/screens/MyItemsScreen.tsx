@@ -4,7 +4,7 @@ import Heading1 from '../components/Heading1';
 import { AuthContext } from '../navigation/AuthProvider';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { app } from '../Firebase';
-
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import MarketplaceItemCard from '../components/marketplace-screen/MarketplaceItemCard';
 
 const database = getFirestore(app);
@@ -66,7 +66,12 @@ const MyItemsScreen = ({ navigation }) => {
 		navigation.navigate('NewItem')
 	}
 
-	const RenderFunction = ({ item }) => <MarketplaceItemCard item={item.item} />
+	const Separator = ({ }) => {
+		return <View style={{ height: 5 }}></View>;
+	}
+	const Footer = <View style={{ height: 5 }}></View >
+	const KeyExtractFunction = item => item.id;
+	const RenderFunction = ({ item }) => <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', {item:item})} item={item.item} />
 
 	return (
 		<View style={styles.container}>

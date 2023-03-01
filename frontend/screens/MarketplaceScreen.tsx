@@ -1,13 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView, Text} from 'react-native';
+import {View, StyleSheet, ScrollView, Button, Text} from 'react-native';
 import {AuthContext} from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
 import {getFirestoreCollectionDataWhere} from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
+import ItemDetailsScreen from './ItemDetailsScreen';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SearchBar } from '@rneui/themed';
 
-const MarketplaceScreen = () => {
+const MarketplaceScreen = ({navigation}) => {
     const {user} = useContext(AuthContext);
     const [items, setItems] = useState<Item[]>([]);
     const [searchedItems, setSearchedItems] = useState<Item[]>([]);
@@ -56,7 +58,7 @@ const MarketplaceScreen = () => {
                     searchedItems.length > 0 ? searchedItems.map((item, index) => {
                         return <MarketplaceItemCard key={index} item={item}/>
                     } ) : items.map((item, index) => {
-                        return <MarketplaceItemCard key={index} item={item}/>
+                        return <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', {item:item})} item={item}/>
                     })
                 }
             </ScrollView>
