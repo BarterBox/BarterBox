@@ -32,7 +32,7 @@ There is limited functionality available in this release
 
 ### Release Functionality
 -   Users can sign up and create a basic profile that can be used to login to the app
--   Users can view all items available on the marketplace 
+-   Users can view all items available on the marketplace and click into items for further details on them
 -   Users can see which items they have borrowed and also see which items they have added to the app that could be borrowed by other users
 -   Users can view their basic profile
 
@@ -49,7 +49,13 @@ From this all necessary dependencies to build the project should be installed
 ## Build from QR Code
 To view the app on an iOS or Android device that has 'Expo Go' installed, please scan the following QR Code.
 
-![QR Code for App]()
+iOS QR Code:
+
+![iOS QR Code for App](images/iOSQR.png)
+
+Android QR Code:
+
+![Android QR Code for App](images/androidQR.png)
 
 The Login Credentials for viewing the Test User are:
 ```
