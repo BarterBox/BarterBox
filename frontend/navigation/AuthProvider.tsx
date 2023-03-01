@@ -2,6 +2,7 @@ import React, { createContext, useState, useMemo } from 'react';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth"
 
 import { app } from '../Firebase';
+import { app } from '../Firebase';
 import { AuthContextType } from '../@types/app';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
