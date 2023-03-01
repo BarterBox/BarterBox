@@ -10,36 +10,30 @@ import { SearchBar } from '@rneui/themed';
 const MarketplaceScreen = () => {
     const {user} = useContext(AuthContext);
     const [items, setItems] = useState<Item[]>([]);
+    const [searchedItems, setSearchedItems] = useState<Item[]>([]);
     const [search, setSearch] = useState("");
 
     const fetchItems = async () => {
         const items = await getFirestoreCollectionDataWhere("items", "owner", "!=", user.uid);
         setItems(items as Item[]);
     }
-    const clearSearchedItems = () => {
-        searchedItems = new Array();
-        for(var i=0; i<items.length; i++){
-           searchedItems.push(items[i]);
-       }
-     };
+   
 
      const updateSearch = (search) => {
         setSearch(search);
-        clearSearchedItems();
         searchData(search);
        
       };
-      let searchedItems = [];
       const searchData = (search) => {
-    
-          searchedItems = new Array();
-          for(var i=0; i<items.length; i++){
+        const searchedItems = [];
+          for(let i=0; i<items.length; i++){
               if(items[i].heading.startsWith(search)){
                   searchedItems.push(items[i]);
               }
           }
           console.log(searchedItems.length);
-  
+          setSearchedItems(searchedItems)
+
   
       }
   
@@ -59,7 +53,7 @@ const MarketplaceScreen = () => {
 
         <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
                 {
-                    searchedItems.length == items.length ? searchedItems.map((item, index) => {
+                    searchedItems.length > 0 ? searchedItems.map((item, index) => {
                         return <MarketplaceItemCard key={index} item={item}/>
                     } ) : items.map((item, index) => {
                         return <MarketplaceItemCard key={index} item={item}/>
