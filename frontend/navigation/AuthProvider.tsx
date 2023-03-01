@@ -3,11 +3,13 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, si
 
 import { app } from '../Firebase';
 import { AuthContextType } from '../@types/app';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }) => {
     const auth = getAuth(app)
+    const db = getFirestore(app)
     const [user, setUser] = useState(null);
     const authContextValue = useMemo(() => ({
         user,
@@ -19,9 +21,14 @@ export const AuthProvider = ({ children }) => {
             console.log(e);
           }
         },
-        register: async (email, password) => {
+        register: async (email, password, name) => {
           try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCreds = await createUserWithEmailAndPassword(auth, email, password);
+            const userId = userCreds.user.uid
+            await setDoc(doc(db, "Users", userId), {
+              displayName: name,
+              email: email
+            })
           } catch (e) {
             console.log(e);
           }
