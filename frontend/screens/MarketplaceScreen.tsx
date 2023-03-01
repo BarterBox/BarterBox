@@ -31,6 +31,7 @@ const MarketplaceScreen = () => {
       };
       let searchedItems = [];
       const searchData = (search) => {
+    
           searchedItems = new Array();
           for(var i=0; i<items.length; i++){
               if(items[i].heading.startsWith(search)){
@@ -53,14 +54,17 @@ const MarketplaceScreen = () => {
             <SearchBar
           placeholder="Seach Marketplace ..."
           onChangeText={updateSearch}
-          value={search}
-          
+          value={search}          
         />
 
-            <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
-                {items.map((item, index) => {
-                    return <MarketplaceItemCard key={index} item={item}/>
-                })}
+        <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
+                {
+                    searchedItems.length == items.length ? searchedItems.map((item, index) => {
+                        return <MarketplaceItemCard key={index} item={item}/>
+                    } ) : items.map((item, index) => {
+                        return <MarketplaceItemCard key={index} item={item}/>
+                    })
+                }
             </ScrollView>
         </View>
     );
