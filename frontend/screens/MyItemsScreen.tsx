@@ -46,7 +46,7 @@ const MyItemsScreen = ({ navigation }) => {
 	}
 	const Footer = <View style={{ height: 5 }}></View >
 	const KeyExtractFunction = item => item.id;
-	const RenderFunction = ({ item }) => <TouchableOpacity onPress={() => navigation.navigate('ItemDetails', {item:item})}><MarketplaceItemCard item={item.item} /></TouchableOpacity>
+	const RenderFunction = ({ item }) => <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', {item:item})} item={item.item} />
 
 	return (
 		<View style={styles.container}>

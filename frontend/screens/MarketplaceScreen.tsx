@@ -26,7 +26,7 @@ const MarketplaceScreen = ({navigation}) => {
             <Heading1 text="Marketplace"/>
             <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
                 {items.map((item, index) => {
-                    return <TouchableOpacity key={index} onPress={() => navigation.navigate('ItemDetails', {item:item})}><MarketplaceItemCard  item={item}/></TouchableOpacity>
+                    return <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', {item:item})} item={item}/>
                 })}
             </ScrollView>
         </View>
