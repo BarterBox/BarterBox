@@ -9,10 +9,11 @@ const ItemDetailsScreen = ({route, navigation}) => {
 
     return (
         <View style={styles.container}>
-            <Text>{item.heading}</Text>
-            
+            <Text style={styles.heading}>Item: {item.heading}</Text>
+            <Text></Text>
+            <Text>Description:</Text>
             <Text>{item.description}</Text>
-            {/* <Text>{item.owner}</Text> */}
+            <Text></Text>
             <Image source={{uri: item.image_url}} style={{width: 200, height: 200}}/>
             <Button title="Back" onPress={() => navigation.goBack()}/>
         </View>
@@ -35,7 +36,10 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         justifyContent: 'space-evenly',
-    }
+    },
+    heading: {
+        fontWeight: 'bold',
+  },
 });
 
 export default ItemDetailsScreen;
