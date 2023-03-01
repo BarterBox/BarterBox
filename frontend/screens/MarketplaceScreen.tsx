@@ -1,12 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, Button} from 'react-native';
 import {AuthContext} from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
 import {getFirestoreCollectionDataWhere} from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
+import ItemDetailsScreen from './ItemDetailsScreen';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const MarketplaceScreen = () => {
+const MarketplaceScreen = ({navigation}) => {
     const {user} = useContext(AuthContext);
     const [items, setItems] = useState<Item[]>([]);
 
@@ -24,7 +26,7 @@ const MarketplaceScreen = () => {
             <Heading1 text="Marketplace"/>
             <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
                 {items.map((item, index) => {
-                    return <MarketplaceItemCard key={index} item={item}/>
+                    return <TouchableOpacity key={index} onPress={() => navigation.navigate('ItemDetails', {item:item})}><MarketplaceItemCard  item={item}/></TouchableOpacity>
                 })}
             </ScrollView>
         </View>

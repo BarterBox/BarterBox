@@ -3,7 +3,7 @@ import Item from "../../types/Item";
 
 export default function MarketplaceItemCard({item}:{item: Item}) {
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} >
             <Image style={styles.image} source={{uri: item.image_url}}/>
             <Text style={styles.heading}>{item.heading}</Text>
         </TouchableOpacity>
