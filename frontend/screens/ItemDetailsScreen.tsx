@@ -4,9 +4,8 @@ import { StyleSheet } from 'react-native';
 import Item from "../types/Item";
 
 
-const ItemDetailsScreen = ({route, navigation}) => {
-    const { item } = route.params;
-
+const ItemDetailsScreen = ({ navigation, route }) => {
+    const { item } = route.params.item;
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>Item: {item.heading}</Text>
@@ -14,8 +13,8 @@ const ItemDetailsScreen = ({route, navigation}) => {
             <Text>Description:</Text>
             <Text>{item.description}</Text>
             <Text></Text>
-            <Image source={{uri: item.image_url}} style={{width: 200, height: 200}}/>
-            <Button title="Back" onPress={() => navigation.goBack()}/>
+            <Image source={{ uri: item.image_url }} style={{ width: 200, height: 200 }} />
+            <Button title="Back" onPress={() => navigation.goBack()} />
         </View>
     );
 }
@@ -23,9 +22,9 @@ const ItemDetailsScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
+        backgroundColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center",
         paddingTop: 40,
     },
     itemsContainer: {
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontWeight: 'bold',
-  },
+    },
 });
 
 export default ItemDetailsScreen;
