@@ -1,9 +1,7 @@
 import React, { useState, useContext } from 'react'
-import { View, Button, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard, Image, Text} from 'react-native'
+import { View, Button, TextInput, StyleSheet, TouchableWithoutFeedback, Image, Text} from 'react-native'
 import { AuthContext } from '../navigation/AuthProvider';
-import { Platform } from 'react-native';
-
-function dismissKeyboard() { if (Platform.OS != "web"){ Keyboard.dismiss(); } }
+import DismissKeyboard from '../components/DismissKeyboard';
 
 const LoginScreen = ({navigation}) => {
     const { login } = useContext(AuthContext)
@@ -11,7 +9,7 @@ const LoginScreen = ({navigation}) => {
     const [password, setPassword] = useState('');
 
     return(
-        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback onPress={() => DismissKeyboard()}>
             <View style={styles.container}>
                 <View style={styles.inputContainer}>
                     <TextInput 
@@ -35,10 +33,10 @@ const LoginScreen = ({navigation}) => {
                     title='Login'
                     onPress={ () => login(email, password) }
                 />
-                {/* <Button
-                    title="Sign In Using Google"
-                    onPress={ () => handleGoogleLogin() }
-                /> */}
+                <Button
+                    title="Don't have an account? Sign Up Here"
+                    onPress={ () => navigation.navigate('Signup') }
+                />
             </View>
         </TouchableWithoutFeedback>
     )
