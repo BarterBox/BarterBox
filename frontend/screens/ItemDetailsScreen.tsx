@@ -5,7 +5,7 @@ import Item from "../types/Item";
 
 
 const ItemDetailsScreen = ({ navigation, route }) => {
-    const { item } = route.params.item;
+    const item = route.params.item.item ? route.params.item.item : route.params.item;
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>Item: {item.heading}</Text>
