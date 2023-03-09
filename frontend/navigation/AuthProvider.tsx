@@ -21,17 +21,26 @@ export const AuthProvider = ({ children }) => {
             console.log(e);
           }
         },
-        register: async (email, password, name) => {
+        register: async (email, password, userData) => {
           try {
             const userCreds = await createUserWithEmailAndPassword(auth, email, password);
             const userId = userCreds.user.uid
             await setDoc(doc(db, "Users", userId), {
-              displayName: name,
-              email: email
+              displayName: userData.fullname,
+              email: email,
+              country: userData.country,
+              city: userData.city
             })
           } catch (e) {
             console.log(e);
           }
+        },
+        updateUser: async(userData) => {
+          await setDoc(doc(db, "Users", userData.uid), {
+            displayName: userData.fullname,
+            country: userData.country,
+            city: userData.city
+          })
         },
         logout: async () => {
           try {

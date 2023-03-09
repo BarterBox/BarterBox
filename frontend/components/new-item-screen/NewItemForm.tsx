@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TextInput, Image, TouchableWithoutFeedback, Button, StyleSheet, Pressable, Alert, Keyboard } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import { getFirestore, addDoc, doc, collection, serverTimestamp } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
 import { Platform } from 'react-native';
+import PickImage from '../PickImage';
 
 import { storage } from '../../Firebase';
 import MultilineInput from '../MultilineInput';
@@ -18,22 +18,6 @@ const NewItemForm = ({ onSubmit }) => {
     const [itemDescription, setItemDescription] = useState('');
     const [image, setImage] = useState(null);
     const { user } = useContext(AuthContext)
-
-    const pickImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-            });
-
-            if (!result.cancelled) {
-                setImage(result.uri);
-            }
-        }
-    };
 
     const handleAddItem = async () => {
         try {
@@ -72,6 +56,11 @@ const NewItemForm = ({ onSubmit }) => {
         console.log(itemName, itemDescription, image);
     };
 
+    const handlePickImage = async () => {
+        const result = await PickImage()
+        setImage(result.assets[0].uri)
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
             <View style={styles.container}>
@@ -89,7 +78,7 @@ const NewItemForm = ({ onSubmit }) => {
                 {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
                 <Pressable
                     style={styles.button}
-                    onPress={pickImage}>
+                    onPress={handlePickImage}>
                     <Text style={styles.pressableText}>Add Image</Text>
                 </Pressable>
                 <Pressable

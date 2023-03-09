@@ -1,30 +1,23 @@
+import { defaultSpacing } from '@rneui/base';
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, TextInput, Button, Alert, Platform } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import PickImage from '../components/PickImage';
 import { AuthContext } from '../navigation/AuthProvider';
 
-
-const SignUpScreen = ({navigation}) => {
-    const { register } = useContext(AuthContext);
+const EditProfileScreen = () => {
+    const { user, updateUser } = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
 
-    const registerUser = async () => {
+    const performUpdate = async () => {
         try {
-            console.log("Registering User")
-            await register(email, password, userData)
-            console.log("User Registered")
+            setUserData({...userData, uid: user.uid})
+            console.log("Updating User Data")
+            await updateUser(userData)
+            console.log("Update Complete")
         } catch(e) {
             console.log(e)
         }
-    }
-
-    const handlePickImage = async () => {
-        const result = await PickImage()
-        setUserData({...userData, image_url: result.assets[0].uri})
     }
 
     return (
@@ -66,32 +59,9 @@ const SignUpScreen = ({navigation}) => {
                     style={styles.textInput}
                 />
             </View>
-            <View style={styles.action}>
-                <TextInput
-                    placeholder='Email Address'
-                    placeholderTextColor="#666666"
-                    onChangeText={(email) => setEmail(email)}
-                    numberOfLines={1}
-                    value={email}
-                    keyboardType={'email-address'}
-                    style={styles.textInput}
-                />
-            </View>
-            <View style={styles.action}>
-                <TextInput
-                    placeholder='Password'
-                    placeholderTextColor="#666666"
-                    onChangeText={(password) => setPassword(password)}
-                    numberOfLines={1}
-                    value={password}
-                    keyboardType={'default'}
-                    secureTextEntry={true}
-                    style={styles.textInput}
-                />
-            </View>
             <Button
-                title='Sign Up'
-                onPress={ () => registerUser() }
+                title='Update'
+                onPress={ () => performUpdate() }
             />
         </View>
     );  
@@ -125,4 +95,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SignUpScreen;
+export default EditProfileScreen
