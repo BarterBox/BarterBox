@@ -13,11 +13,11 @@ const ProfileScreen = ({navigation}) => {
 	const [about, setAbout] = useState('I am a person');
 	const [country, setCountry] = useState('');
 	const [city, setCity] = useState('');
-	const [imageUrl, setImageUrl] = useState('');
+	const [imageUrl, setImageUrl] = useState(null);
 
 
 	useEffect(() => {
-		const querySnapshot = getDoc(doc(db, "Users", user.uid))
+		getDoc(doc(db, "Users", user.uid))
 		.then(snapshot => {
 			if (snapshot.exists) {
 				const data = snapshot.data();

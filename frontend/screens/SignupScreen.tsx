@@ -31,6 +31,7 @@ const SignUpScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.action}>
+                <FontAwesome name="user-o" size={20} />
                 <TextInput
                     placeholder='Full Name'
                     placeholderTextColor="#666666"
@@ -68,6 +69,7 @@ const SignUpScreen = ({navigation}) => {
                 />
             </View>
             <View style={styles.action}>
+                <FontAwesome name="envelope-o" size={20} />
                 <TextInput
                     placeholder='Email Address'
                     placeholderTextColor="#666666"
