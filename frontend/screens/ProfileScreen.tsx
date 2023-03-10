@@ -25,6 +25,7 @@ const ProfileScreen = ({navigation}) => {
 				setCountry(data.country);
 				setCity(data.city);
 				setImageUrl(data.image_url);
+				console.log(imageUrl);
 				console.log(data);
 			} else {
 				console.log("No such document!");
@@ -40,7 +41,9 @@ const ProfileScreen = ({navigation}) => {
 			<View style={styles.container}>
 				<Image
 					style={styles.userImg}
-					source={require(imageUrl)}
+					source={{
+						uri: imageUrl
+					}}
 				/>
 				<Text style={styles.userName}>{name}</Text>
 				<Text style={styles.aboutUser}>

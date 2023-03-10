@@ -1,4 +1,3 @@
-import { defaultSpacing } from '@rneui/base';
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, TextInput, Button, Alert, Platform } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';

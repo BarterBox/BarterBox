@@ -29,7 +29,8 @@ export const AuthProvider = ({ children }) => {
               displayName: userData.fullname,
               email: email,
               country: userData.country,
-              city: userData.city
+              city: userData.city,
+              image_url: userData.image_url
             })
           } catch (e) {
             console.log(e);

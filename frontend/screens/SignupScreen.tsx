@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Alert, Platform } from 'react-native';
+import { StyleSheet, View, TextInput, Button, Text, Alert, Platform, Touchable } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PickImage from '../components/PickImage';
@@ -89,6 +90,9 @@ const SignUpScreen = ({navigation}) => {
                     style={styles.textInput}
                 />
             </View>
+            <TouchableOpacity style={styles.userBtn} onPress={() => handlePickImage()}>
+                <Text style={styles.userBtnTxt}>Add Profile Picture</Text>
+            </TouchableOpacity>
             <Button
                 title='Sign Up'
                 onPress={ () => registerUser() }
@@ -122,6 +126,17 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : -12,
         paddingLeft: 10,
         color: '#333333',
+    },
+    userBtn: {
+        borderColor: '#2e64e5',
+        borderWidth: 2,
+        borderRadius: 3,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        marginHorizontal: 5,
+    },
+    userBtnTxt: {
+        color: '#2e64e5',
     }
 })
 
