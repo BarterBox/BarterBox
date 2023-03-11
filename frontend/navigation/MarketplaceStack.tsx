@@ -7,7 +7,7 @@ export default function MarketplaceStack() {
     const Stack = createStackNavigator();
     return (
         <Stack.Navigator
-        initialRouteName='Marketplace'
+        initialRouteName='Marketplaces'
         screenOptions={{
             headerShown: false
         }}
