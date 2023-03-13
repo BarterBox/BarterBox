@@ -28,22 +28,28 @@ const ChatsScreen = ({ navigation }) => {
             const { displayName, image_url = null, email } = data;
             setUserData({ displayName: displayName, photoURL: image_url, email: email });
 
-            //get data about chats the user has as user1 or user2
-            const chats = [];
-            async function getChatsAs(userRole) {
-                const correspondantRole = (userRole == "user1") ? "user2" : "user1";
-                const chatsQuery = query(collection(database, "chats"), where(userRole, "==", user.uid));
-                const chatDocs = await getDocs(chatsQuery);
-                for (const document of chatDocs.docs) {
-                    const correspondant = await getDoc(doc(database, "Users", document.data()[correspondantRole]));
-                    const { displayName, image_url = null, email } = correspondant.data();
-                    chats.push({ id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email } });
-                }
-            };
-            await getChatsAs("user1");
-            await getChatsAs("user2");
+            async function updateChats() {
+                const chats = [];
+                async function getChatsAs(userRole) {
+                    const correspondantRole = (userRole == "user1") ? "user2" : "user1";
+                    const chatsQuery = query(collection(database, "chats"), where(userRole, "==", user.uid));
+                    const chatDocs = await getDocs(chatsQuery);
+                    for (const document of chatDocs.docs) {
+                        const correspondant = await getDoc(doc(database, "Users", document.data()[correspondantRole]));
+                        const { displayName, image_url = null, email } = correspondant.data();
+                        chats.push({ id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email } });
+                    }
+                };
+                await getChatsAs("user1");
+                await getChatsAs("user2");
 
-            setChats(chats);
+                setChats(chats);
+            }
+            //load the chats with the screen
+            await updateChats();
+
+            //check for updates once in a while
+            setInterval(updateChats, 10000)
         })();
     }, []);
 

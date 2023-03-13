@@ -15,14 +15,18 @@ const MessagingScreen = ({ navigation, route }) => {
     useEffect(() => {
         (async () => {
             const messagesQuery = query(collection(database, `chats/${route.params.chat.id}/messages`));
-            //check for updates regularly
-            setInterval(async () => {
+
+            async function updateMessages() {
                 const messagesDocs = await getDocs(messagesQuery);
-                setMessages(messagesDocs.docs
-                    .filter((document) => { return document.data().content && true })
-                    .map((document, index) => { return { id: index, message: document.data() } })
-                )
-            }, 1000);
+                const messages = messagesDocs.docs
+                    .filter((document) => { return document.data().content && true })   //non-blank messages
+                    .map((document, index) => { console.log(document.data()); return { id: index, message: document.data() } });
+                setMessages(messages);
+            }
+            //load messages with screen
+            updateMessages();
+            //check for updates regularly
+            setInterval(updateMessages, 2000);
         })();
     }, []);
 
