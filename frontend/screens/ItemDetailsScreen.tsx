@@ -15,6 +15,10 @@ const ItemDetailsScreen = ({ navigation, route }) => {
             <Text style={styles.heading}>Item: {item.heading}</Text>
             <Button title="Message owner" onPress={async () => {
 
+                if (item.owner == route.params.userid) {
+                    Alert.alert("You can't create a conversation with yourself");
+                    return;
+                }
                 //arbitrary convention to have user1 be alphabetically before user2 in the chat document
                 const [user1, user2] = [item.owner, route.params.userid].sort();
 
