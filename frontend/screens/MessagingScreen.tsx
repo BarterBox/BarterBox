@@ -14,7 +14,7 @@ const MessagingScreen = ({ navigation, route }) => {
 
     const [input, setInput] = useState("");
 
-    const spacing = 5;
+    const Spacer = <View style={{ height: 5 }}></View>;
     useEffect(() => {
         (async () => {
             const messagesQuery = query(collection(database, `chats/${route.params.chat.id}/messages`));
@@ -32,17 +32,16 @@ const MessagingScreen = ({ navigation, route }) => {
             setInterval(updateMessages, 2000);
         })();
     }, []);
-
     return (
         <KeyboardAvoidingView behavior="position" style={styles.container}>
             <View style={{ alignItems: "center" }}>
                 <UserCard user={route.params.chat.correspondant} onPress={() => { }}></UserCard>
             </View>
-            <View style={{ height: spacing }}></View>
+            {Spacer}
             <View style={{ borderColor: "#000", borderWidth: 5 }}>
                 <Button title="Go back" onPress={() => { navigation.navigate("Chats") }}></Button>
             </View>
-            <View style={{ height: spacing }}></View>
+            {Spacer}
             <FlatList
                 data={messages}
                 renderItem={({ item }) => {
@@ -54,11 +53,11 @@ const MessagingScreen = ({ navigation, route }) => {
                     }
                 }}
             />
-            <View style={{ height: spacing }}></View>
+            {Spacer}
             <View style={{ borderColor: "#000", borderWidth: 1 }}>
                 <TextInput placeholder="Enter a message" value={input} onChangeText={(text) => { setInput(text); }}></TextInput>
             </View>
-            <View style={{ height: spacing }}></View>
+            {Spacer}
             <View style={{ borderColor: "#000", borderWidth: 5 }}>
                 <Button title="Send message" onPress={() => {
                     //unix millis to have really low chance of two documents writing with the same id (lazy solution)

@@ -3,7 +3,7 @@ import { View, Button, FlatList } from 'react-native';
 import { StyleSheet } from 'react-native';
 import Heading1 from "../components/Heading1";
 import { AuthContext } from '../navigation/AuthProvider';
-import { app } from '../Firebase';
+import { app, getUserById } from '../Firebase';
 import { getFirestore, getDoc, getDocs, doc, query, collection, where } from "firebase/firestore";
 
 import UserCard from "../components/messaging/UserCard";
@@ -23,25 +23,23 @@ const ChatsScreen = ({ navigation }) => {
     useEffect(() => {
         (async () => {
             //get data for the current user
-            const userSnapshot = await getDoc(doc(database, "Users", user.uid));
-            const data = userSnapshot.data();
-            const { displayName, image_url = null, email } = data;
+            const { displayName, image_url = null, email } = await getUserById(user.uid);
             setUserData({ displayName: displayName, photoURL: image_url, email: email });
 
             async function updateChats() {
                 const chats = [];
-                async function getChatsAs(userRole) {
-                    const correspondantRole = (userRole == "user1") ? "user2" : "user1";
-                    const chatsQuery = query(collection(database, "chats"), where(userRole, "==", user.uid));
-                    const chatDocs = await getDocs(chatsQuery);
-                    for (const document of chatDocs.docs) {
-                        const correspondant = await getDoc(doc(database, "Users", document.data()[correspondantRole]));
-                        const { displayName, image_url = null, email } = correspondant.data();
-                        chats.push({ id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email } });
-                    }
-                };
-                await getChatsAs("user1");
-                await getChatsAs("user2");
+                let chatsQuery = query(collection(database, "chats"), where("user1", "==", user.uid));
+                let chatDocs = await getDocs(chatsQuery);
+                for (const document of chatDocs.docs) {
+                    const { displayName, image_url = null, email } = await getUserById(document.data().user2);
+                    chats.push({ id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email } });
+                }
+                chatsQuery = query(collection(database, "chats"), where("user2", "==", user.uid));
+                chatDocs = await getDocs(chatsQuery);
+                for (const document of chatDocs.docs) {
+                    const { displayName, image_url = null, email } = await getUserById(document.data().user1);
+                    chats.push({ id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email } });
+                }
 
                 setChats(chats);
             }

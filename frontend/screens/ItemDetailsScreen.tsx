@@ -3,7 +3,7 @@ import { View, Text, Button, Alert, Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import Item from "../types/Item";
 
-import { app } from '../Firebase';
+import { app, getUserById } from '../Firebase';
 import { getFirestore, getDoc, getDocs, addDoc, setDoc, doc, query, collection, where, onSnapshot } from "firebase/firestore";
 
 const database = getFirestore(app);
@@ -19,26 +19,26 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                     Alert.alert("You can't create a conversation with yourself");
                     return;
                 }
+
                 //arbitrary convention to have user1 be alphabetically before user2 in the chat document
                 const [user1, user2] = [item.owner, route.params.userid].sort();
 
                 //look for a chat between the user and the owner
-                let existingChat = (await getDocs(query(collection(database, "chats"), where("user1", "==", user1)))).docs.find((document) => {
-                    return document.data().user2 == user2;
-                });
-
-                let id;
+                const allChats = await getDocs(query(collection(database, "chats"), where("user1", "==", user1)));
+                let existingChat = allChats.docs.find((document) => { return document.data().user2 == user2; });
 
                 //create a chat if it does not exist
+                let id;
                 if (!existingChat) {
-                    const newChat = (await addDoc(collection(database, "chats"), {
+                    const newChat = await addDoc(collection(database, "chats"), {
                         user1: user1,
                         user2: user2
-                    }));
+                    });
+                    //create messages collection in the chat by adding a blank document
                     await setDoc(doc(database, `chats/${newChat.id}/messages`, "0"), {
                         sender: null,
                         content: null
-                    })
+                    });
                     id = newChat.id;
                 }
                 else {
@@ -46,9 +46,8 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                 }
 
                 //navigate to the new chat created (or existing)
-                const owner = await getDoc(doc(database, "Users", item.owner))
-                const { displayName, image_url, email } = owner.data();
-                navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: existingChat, correspondant: { displayName: displayName, image_url: image_url, email: email } }, userid: route.params.userid } })
+                const { displayName, image_url, email } = await getUserById(item.owner);
+                navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
             }}></Button>
             <Text></Text>
             <Text>Description:</Text>
