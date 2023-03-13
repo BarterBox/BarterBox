@@ -56,7 +56,7 @@ const MarketplaceScreen = ({navigation}) => {
         <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
                 {
                     searchedItems.length > 0 ? searchedItems.map((item, index) => {
-                        return <MarketplaceItemCard key={index} item={item}/>
+                        return <MarketplaceItemCard key={index} item={item} onPress={() => navigation.navigate('ItemDetails', {item:item})}/>
                     } ) : items.map((item, index) => {
                         return <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', {item:item})} item={item}/>
                     })
