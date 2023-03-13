@@ -8,7 +8,7 @@ export default function MyItemsStack() {
     const Stack = createStackNavigator();
     return (
         <Stack.Navigator 
-        initialRouteName='Items'
+        initialRouteName='ItemsHere'
         screenOptions={{
             headerShown: false
         }}

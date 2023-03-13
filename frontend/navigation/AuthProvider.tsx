@@ -21,17 +21,38 @@ export const AuthProvider = ({ children }) => {
             console.log(e);
           }
         },
-        register: async (email, password, name) => {
+        register: async (email, password, userData) => {
           try {
             const userCreds = await createUserWithEmailAndPassword(auth, email, password);
             const userId = userCreds.user.uid
-            await setDoc(doc(db, "Users", userId), {
-              displayName: name,
-              email: email
-            })
+            if (userData.image_url !== null) {
+              await setDoc(doc(db, "Users", userId), {
+                displayName: userData.fullname,
+                email: email,
+                country: userData.country,
+                city: userData.city,
+                image_url: userData.image_url
+              })
+            } else {
+              await setDoc(doc(db, "Users", userId), {
+                displayName: userData.fullname,
+                email: email,
+                country: userData.country,
+                city: userData.city,
+                image_url: null
+              })
+            }
           } catch (e) {
             console.log(e);
           }
+        },
+        updateUser: async(userData) => {
+          await setDoc(doc(db, "Users", userData.uid), {
+            displayName: userData.displayName,
+            country: userData.country,
+            city: userData.city,
+            image_url: userData.image_url
+          })
         },
         logout: async () => {
           try {

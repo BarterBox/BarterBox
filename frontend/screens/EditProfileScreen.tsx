@@ -1,23 +1,41 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Text, Alert, Platform, Touchable } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { doc, getDoc } from 'firebase/firestore';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View, TextInput, Button, Platform, TouchableOpacity, Text } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PickImage from '../components/PickImage';
+import { db } from '../Firebase';
 import { AuthContext } from '../navigation/AuthProvider';
 
-
-const SignUpScreen = ({navigation}) => {
-    const { register } = useContext(AuthContext);
+const EditProfileScreen = () => {
+    const { user, updateUser } = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const registerUser = async () => {
+    
+    const preUpdate = () => {
         try {
-            console.log("Registering User")
-            await register(email, password, userData)
-            console.log("User Registered")
+            getDoc(doc(db, "Users", user.uid))
+            .then(snapshot => {
+                if (snapshot.exists) {
+                    const data = snapshot.data();
+                    setUserData({...userData, 
+                        displayName: data.displayName,
+                        country: data.country,
+                        city: data.city,
+                        image_url: data.image_url
+                    })
+                }
+            })
+        } catch(e) {
+            console.log(e)
+        }
+    }
+    
+    const performUpdate = async () => {
+        try {
+            setUserData({...userData, uid: user.uid})
+            console.log("Updating User Data")
+            await updateUser(userData)
+            console.log("Update Complete")
         } catch(e) {
             console.log(e)
         }
@@ -28,6 +46,11 @@ const SignUpScreen = ({navigation}) => {
         setUserData({...userData, image_url: result.assets[0].uri})
     }
 
+    useEffect(() => {
+        preUpdate();
+        console.log(userData)
+    }, [])
+
     return (
         <View style={styles.container}>
             <View style={styles.action}>
@@ -35,9 +58,9 @@ const SignUpScreen = ({navigation}) => {
                 <TextInput
                     placeholder='Full Name'
                     placeholderTextColor="#666666"
-                    value={userData ? userData.fullname : ''}
-                    onChangeText={(txt) => setUserData({...userData, fullname: txt})}
+                    onChangeText={(txt) => setUserData({...userData, displayName: txt})}
                     numberOfLines={1}
+                    autoCorrect={false}
                     keyboardType={'default'}
                     style={styles.textInput}
                 />
@@ -48,7 +71,6 @@ const SignUpScreen = ({navigation}) => {
                     placeholder="Country"
                     placeholderTextColor="#666666"
                     autoCorrect={false}
-                    value={userData ? userData.country : ''}
                     onChangeText={(txt) => setUserData({...userData, country: txt})}
                     style={styles.textInput}
                 />
@@ -63,32 +85,7 @@ const SignUpScreen = ({navigation}) => {
                     placeholder="City"
                     placeholderTextColor="#666666"
                     autoCorrect={false}
-                    value={userData ? userData.city : ''}
                     onChangeText={(txt) => setUserData({...userData, city: txt})}
-                    style={styles.textInput}
-                />
-            </View>
-            <View style={styles.action}>
-                <FontAwesome name="envelope-o" size={20} />
-                <TextInput
-                    placeholder='Email Address'
-                    placeholderTextColor="#666666"
-                    onChangeText={(email) => setEmail(email)}
-                    numberOfLines={1}
-                    value={email}
-                    keyboardType={'email-address'}
-                    style={styles.textInput}
-                />
-            </View>
-            <View style={styles.action}>
-                <TextInput
-                    placeholder='Password'
-                    placeholderTextColor="#666666"
-                    onChangeText={(password) => setPassword(password)}
-                    numberOfLines={1}
-                    value={password}
-                    keyboardType={'default'}
-                    secureTextEntry={true}
                     style={styles.textInput}
                 />
             </View>
@@ -96,8 +93,8 @@ const SignUpScreen = ({navigation}) => {
                 <Text style={styles.userBtnTxt}>Add Profile Picture</Text>
             </TouchableOpacity>
             <Button
-                title='Sign Up'
-                onPress={ () => registerUser() }
+                title='Update'
+                onPress={ () => performUpdate() }
             />
         </View>
     );  
@@ -136,10 +133,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 12,
         marginHorizontal: 5,
-    },
+      },
     userBtnTxt: {
         color: '#2e64e5',
     }
 })
 
-export default SignUpScreen;
+export default EditProfileScreen

@@ -8,6 +8,7 @@ export type AuthContextType = {
     user: any,
     setUser: any,
     login: (email, password) => Promise<void>,
-    register: (email, password, name) => Promise<void>,
+    register: (email, password, userData) => Promise<void>,
+    updateUser: (userData) => Promise<void>,
     logout: () => Promise<void>,
 }
