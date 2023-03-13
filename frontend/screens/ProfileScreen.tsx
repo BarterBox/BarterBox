@@ -1,16 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, Image, Button, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, Image } from 'react-native-ui-lib';
+import { Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { AuthContext } from '../navigation/AuthProvider';
 import  {app} from '../Firebase';
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BBButton from "../components/general/BBButton";
 const db = getFirestore(app);
 
 const ProfileScreen = ({navigation}) => {
 	const { user, logout } = useContext(AuthContext);
 	const [name, setName] = useState('');
-	const [about, setAbout] = useState('I am a person');
+	const [about] = useState('I am a person');
 	const [country, setCountry] = useState('');
 	const [city, setCity] = useState('');
 	const [imageUrl, setImageUrl] = useState(null);
@@ -49,15 +51,10 @@ const ProfileScreen = ({navigation}) => {
 				<Text style={styles.aboutUser}>
 					{about}
 				</Text>
-				<View style={styles.userBtnWrapper}>
-					<TouchableOpacity style={styles.userBtn} onPress={() => {navigation.navigate('Editor')}}>
-						<Text style={styles.userBtnTxt}>Edit</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.userBtn} onPress={() => {logout(); Alert.alert("You have successfully logged out.")}}>
-						<Text style={styles.userBtnTxt}>Logout</Text>
-					</TouchableOpacity>
+				<View style={styles.userInfoWrapper}>
+					<BBButton label={"Edit"} onPress={() => {navigation.navigate('Editor')}} />
+					<BBButton label={"Logout"} onPress={() => {logout(); Alert.alert("You have successfully logged out.")}} />
 				</View>
-
 				<View style={styles.userInfoWrapper}>
 					<View style={styles.userInfoItem}>
 						<Text style={styles.userInfoTitle}>5 stars</Text>
@@ -101,23 +98,6 @@ const styles = StyleSheet.create({
 	  color: '#666',
 	  textAlign: 'center',
 	  marginBottom: 10,
-	},
-	userBtnWrapper: {
-	  flexDirection: 'row',
-	  justifyContent: 'center',
-	  width: '100%',
-	  marginBottom: 10,
-	},
-	userBtn: {
-	  borderColor: '#2e64e5',
-	  borderWidth: 2,
-	  borderRadius: 3,
-	  paddingVertical: 8,
-	  paddingHorizontal: 12,
-	  marginHorizontal: 5,
-	},
-	userBtnTxt: {
-	  color: '#2e64e5',
 	},
 	userInfoWrapper: {
 	  flexDirection: 'row',
