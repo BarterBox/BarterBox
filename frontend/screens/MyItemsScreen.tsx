@@ -6,6 +6,7 @@ import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "fi
 import { app } from '../Firebase';
 import {View, Button, Colors} from 'react-native-ui-lib';
 import MarketplaceItemCard from '../components/marketplace-screen/MarketplaceItemCard';
+import Background from "../components/general/Background";
 
 const database = getFirestore(app);
 
@@ -71,13 +72,13 @@ const MyItemsScreen = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
+			<Background />
 			<Heading1 text={`${userName}'s Items`}/>
 			<Text style={styles.smallTitle}>Borrowed items</Text>
 			<FlatList
 				contentContainerStyle={{
 					alignItems: "center",
 					justifyContent: "center",
-
 				}}
 				horizontal={true}
 				data={userLoanItems}
@@ -138,7 +139,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		padding: 20,
 		paddingTop: 40,
-		backgroundColor: '#fff',
 		overflow: "scroll",
 	},
 	smallTitle: {

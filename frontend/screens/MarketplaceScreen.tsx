@@ -7,6 +7,8 @@ import Item from "../types/Item";
 import {getFirestoreCollectionDataWhere} from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
 import { SearchBar } from '@rneui/themed';
+import { Image } from 'react-native';
+import Background from "../components/general/Background";
 
 const MarketplaceScreen = ({navigation}) => {
     const {user} = useContext(AuthContext);
@@ -45,6 +47,7 @@ const MarketplaceScreen = ({navigation}) => {
 
     return (
         <View style={styles.container}>
+            <Background/>
             <View marginB-20>
                 <Heading1 text="BarterBox"/>
                 <SearchBar
