@@ -42,7 +42,7 @@ export default function HomeStack() {
       <Tab.Screen name='Marketplace' component={MarketplaceStack} />
       <Tab.Screen name='Items' component={MyItemsStack} />
       <Tab.Screen name="Messaging" component={MessagingStack} />
-      <Tab.Screen name='Profile' component={ProfileScreen} />
+      <Tab.Screen name='Profile' component={ProfileStack} />
     </Tab.Navigator>
   );
 }
