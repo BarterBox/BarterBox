@@ -1,17 +1,17 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View} from 'react-native-ui-lib';
-import {StyleSheet, ScrollView} from 'react-native';
-import {AuthContext} from '../navigation/AuthProvider';
+import { StyleSheet, ScrollView, Button, Text } from 'react-native';
+import { AuthContext } from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
-import {getFirestoreCollectionDataWhere} from "../Firebase";
+import { getFirestoreCollectionDataWhere } from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
 import { SearchBar } from '@rneui/themed';
 import { Image } from 'react-native';
 import Background from "../components/general/Background";
 
-const MarketplaceScreen = ({navigation}) => {
-    const {user} = useContext(AuthContext);
+const MarketplaceScreen = ({ navigation }) => {
+    const { user } = useContext(AuthContext);
     const [items, setItems] = useState<Item[]>([]);
     const [searchedItems, setSearchedItems] = useState<Item[]>([]);
     const [search, setSearch] = useState("");
@@ -20,26 +20,26 @@ const MarketplaceScreen = ({navigation}) => {
         const items = await getFirestoreCollectionDataWhere("items", "owner", "!=", user.uid);
         setItems(items as Item[]);
     }
-   
 
-     const updateSearch = (search) => {
+
+    const updateSearch = (search) => {
         setSearch(search);
         searchData(search);
-       
-      };
-      const searchData = (search) => {
-        const searchedItems = [];
-          for(let i=0; i<items.length; i++){
-              if(items[i].heading.startsWith(search)){
-                  searchedItems.push(items[i]);
-              }
-          }
-          console.log(searchedItems.length);
-          setSearchedItems(searchedItems)
 
-  
-      }
-  
+    };
+    const searchData = (search) => {
+        const searchedItems = [];
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].heading.startsWith(search)) {
+                searchedItems.push(items[i]);
+            }
+        }
+        console.log(searchedItems.length);
+        setSearchedItems(searchedItems)
+
+
+    }
+
 
     useEffect(() => {
         fetchItems()
@@ -57,12 +57,12 @@ const MarketplaceScreen = ({navigation}) => {
                 />
             </View>
 
-        <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
+            <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
                 {
                     searchedItems.length > 0 ? searchedItems.map((item, index) => {
                         return <MarketplaceItemCard key={index} item={item} onPress={() => navigation.navigate('ItemDetails', {item:item})}/>
-                    } ) : items.map((item, index) => {
-                        return <MarketplaceItemCard key={index} onPress={() => navigation.navigate('ItemDetails', {item:item})} item={item}/>
+                    }) : items.map((item, index) => {
+                        return <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', { item: item, userid: user.uid })} item={item} />
                     })
                 }
             </ScrollView>

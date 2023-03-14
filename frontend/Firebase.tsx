@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/storage'
-import {where, query, collection, doc, getDoc, getDocs, getFirestore} from "firebase/firestore";
+import { where, query, collection, doc, getDoc, getDocs, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDuCfCrzKwNr76dXBYy0A1ZQNigj-rz2aQ",
@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig)
+	firebase.initializeApp(firebaseConfig)
 }
 
 // Initialize Firebase
@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const storage = firebase.storage()
 const db = getFirestore(app);
 
-export {app, storage, db}
+export { app, storage, db }
 
 export async function getFirestoreDocumentData(path: string) {
 	return await getDoc(doc(db, path)).then((doc) => {
@@ -37,4 +37,9 @@ export async function getFirestoreDocumentData(path: string) {
 export async function getFirestoreCollectionDataWhere(path: string, field: string, operator: firebase.firestore.WhereFilterOp, value: string) {
 	const querySnapshot = await getDocs(query(collection(db, path), where(field, operator, value)));
 	return querySnapshot.docs.map(doc => doc.data())
+}
+
+export async function getUserById(userid: string) {
+	const user = await getDoc(doc(db, "Users", userid));
+	return user.data();
 }
