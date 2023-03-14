@@ -1,16 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native'
+import {Image, Text, View} from 'react-native-ui-lib'
 import React from 'react'
 
-export default function Heading1({ text }) {
+export default function Heading1({ text, img }: { text: string, img?: string}) {
     return (
-        <Text style={styles.heading1}>{text}</Text>
+        <View row marginT-20 marginB-20>
+            {img && <Image source={img} style={{width: 30, height: 30}}/>}
+            <Text text50>{text}</Text>
+        </View>
     )
 }
-
-const styles = StyleSheet.create({
-    heading1: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-    }
-})

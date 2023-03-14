@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, Alert, SafeAreaView, ScrollView, SectionList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Text } from 'react-native';
 import Heading1 from '../components/Heading1';
 import { AuthContext } from '../navigation/AuthProvider';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import { app } from '../Firebase';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {View, Button, Colors} from 'react-native-ui-lib';
 import MarketplaceItemCard from '../components/marketplace-screen/MarketplaceItemCard';
+import Background from "../components/general/Background";
 
 const database = getFirestore(app);
 
@@ -65,34 +66,69 @@ const MyItemsScreen = ({ navigation }) => {
 	const handleAddItem = () => {
 		navigation.navigate('NewItem')
 	}
-
-	const Separator = ({ }) => {
-		return <View style={{ height: 5 }}></View>;
-	}
 	const Footer = <View style={{ height: 5 }}></View >
 	const KeyExtractFunction = item => item.id;
 	const RenderFunction = ({ item }) => <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', { item: item, userid: user.uid })} item={item.item} />
 
 	return (
 		<View style={styles.container}>
-			<SectionList
+			<Background />
+			<Heading1 text={`${userName}'s Items`}/>
+			<Text style={styles.smallTitle}>Borrowed items</Text>
+			<FlatList
 				contentContainerStyle={{
 					alignItems: "center",
 					justifyContent: "center",
 				}}
-				sections={[{
-					title: `${userName}'s Own Items`, data: userOwnItems
-				}, {
-					title: `${userName}'s Borrowed Items`, data: userLoanItems
-				}]}
-				keyExtractor={(item, index) => item.id}
+				horizontal={true}
+				data={userLoanItems}
+				keyExtractor={KeyExtractFunction}
 				renderItem={RenderFunction}
-				renderSectionHeader={({ section }) => (
-					<Heading1 text={section.title}></Heading1>
-				)}
-				renderSectionFooter={({ section }) => {
-					if (section.title == `${userName}'s Own Items`) { return <Button title="+" onPress={handleAddItem} /> }
+				ListFooterComponent={Footer}
+			/>
+			<View style={{
+				height: 5,
+				backgroundColor: "#000",
+				shadowColor: "#000",
+				shadowOffset: {
+					width: 0,
+					height: 2,
+				},
+				shadowOpacity: 0.25,
+				shadowRadius: 3.84,
+				elevation: 5,
+				width: "120%",
+				marginLeft: -20,
+				marginTop: -5,
+
+			}}></View>
+			<Text style={styles.smallTitle}>Listings</Text>
+			<FlatList
+				contentContainerStyle={{
+					alignItems: "center",
+					justifyContent: "center",
 				}}
+				horizontal={true}
+				data={userOwnItems}
+				keyExtractor={KeyExtractFunction}
+				renderItem={RenderFunction}
+				ListFooterComponent={Footer}
+			/>
+			<Button
+				label="+"
+				labelStyle={{ fontSize: 30, color: Colors.white }}
+				style={{
+					position: "absolute",
+					bottom: 20,
+					right: 20,
+					width: 60,
+					height: 60,
+					alignItems: "center",
+					justifyContent: "center",
+					backgroundColor: Colors.blue30,
+				}}
+				round
+				onPress={handleAddItem}
 			/>
 		</View>
 	);
@@ -100,12 +136,17 @@ const MyItemsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		padding: 20,
+		paddingTop: 40,
 		overflow: "scroll",
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-		top: 35
-	}
+	},
+	smallTitle: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		marginTop: 20,
+		marginBottom: 0,
+	},
 });
 
 export default MyItemsScreen;

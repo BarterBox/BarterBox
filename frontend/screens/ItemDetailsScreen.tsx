@@ -1,19 +1,28 @@
 import React from 'react';
-import { View, Text, Button, Alert, Image } from 'react-native';
-import { StyleSheet } from 'react-native';
-import Item from "../types/Item";
+import {View, Text, Alert, Image} from 'react-native';
+import {Button, Colors} from 'react-native-ui-lib';
+import {StyleSheet} from 'react-native';
+import Background from "../components/general/Background";
 
 import { app, getUserById } from '../Firebase';
 import { getFirestore, getDoc, getDocs, addDoc, setDoc, doc, query, collection, where, onSnapshot } from "firebase/firestore";
+import BBButton from "../components/general/BBButton";
 
 const database = getFirestore(app);
 
-const ItemDetailsScreen = ({ navigation, route }) => {
+const ItemDetailsScreen = ({navigation, route}) => {
     const item = route.params.item.item ? route.params.item.item : route.params.item;
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Item: {item.heading}</Text>
-            <Button title="Message owner" onPress={async () => {
+            <Background/>
+            <Image source={{uri: item.image_url}} style={styles.coverImage}/>
+            <View style={styles.itemsContainer}>
+                <Text style={styles.heading}>{item.heading}</Text>
+                <View style={{borderBottomColor: 'black', borderBottomWidth: 1, marginTop: 10, marginBottom: 10}}/>
+                <Text></Text>
+                <Text>Description:</Text>
+                <Text>{item.description}</Text>
+            <BBButton label="Message owner" onPress={async () => {
 
                 if (item.owner == route.params.userid) {
                     Alert.alert("You can't create a conversation with yourself");
@@ -48,13 +57,12 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                 //navigate to the new chat created (or existing)
                 const { displayName, image_url, email } = await getUserById(item.owner);
                 navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
-            }}></Button>
-            <Text></Text>
-            <Text>Description:</Text>
-            <Text>{item.description}</Text>
-            <Text></Text>
-            <Image source={{ uri: item.image_url }} style={{ width: 200, height: 200 }} />
-            <Button title="Back" onPress={() => navigation.goBack()} />
+            }}></BBButton>
+                <View style={{position: 'absolute', bottom: 0, width: "112%"}}>
+                    <Button label={"Back"} onPress={() => navigation.goBack()}
+                    borderRadius={20} backgroundColor={Colors.red20}/>
+                </View>
+            </View>
         </View>
     );
 }
@@ -62,13 +70,23 @@ const ItemDetailsScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
         paddingTop: 40,
     },
     itemsContainer: {
         flex: 1,
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 20,
+        margin: 20,
+        marginTop: 0,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     scrollBarItemsContainer: {
         flexDirection: "row",
@@ -78,7 +96,18 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontWeight: 'bold',
+        fontSize: 20,
+        alignSelf: 'center',
     },
+    coverImage: {
+        width: '100%',
+        height: 200,
+        resizeMode: 'cover',
+        marginTop: 10,
+        marginBottom: 10,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    }
 });
 
 export default ItemDetailsScreen;

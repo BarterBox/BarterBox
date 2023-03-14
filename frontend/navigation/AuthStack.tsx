@@ -1,13 +1,16 @@
-import React, { useContext } from 'react';
+import React  from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignupScreen from '../screens/SignupScreen';
 import LoginScreen from '../screens/LoginScreen';
-import { AuthContext } from './AuthProvider';
 
 export default function AuthStack() {
     const Stack = createStackNavigator();
     return (
-        <Stack.Navigator initialRouteName='Login'>
+        <Stack.Navigator screenOptions={
+            {
+                headerShown: false
+            }
+        } initialRouteName='Login'>
                 <Stack.Screen
                     name='Login'
                     component={LoginScreen}
