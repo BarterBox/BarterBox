@@ -11,6 +11,7 @@ import BBButton from "../components/general/BBButton";
 import Heading1 from "../components/Heading1";
 import DismissKeyboard from "../components/DismissKeyboard";
 import {useNavigation} from "@react-navigation/native";
+import Background from "../components/general/Background";
 
 const EditProfileScreen = () => {
     const {user, updateUser} = useContext(AuthContext);
@@ -61,6 +62,7 @@ const EditProfileScreen = () => {
     return (
         <TouchableWithoutFeedback onPress={() => DismissKeyboard()}>
             <View style={styles.container}>
+                <Background/>
                 <Heading1 text={'Edit Profile'}/>
                 <View style={styles.action}>
                     <FontAwesome name="user-o" size={20}/>
@@ -123,7 +125,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         height: '100%',
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },

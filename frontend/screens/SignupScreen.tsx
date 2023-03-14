@@ -1,14 +1,17 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Text, Alert, Platform, Touchable } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, {useContext, useState} from 'react';
+import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {View, Text} from 'react-native-ui-lib';
 import PickImage from '../components/PickImage';
-import { AuthContext } from '../navigation/AuthProvider';
+import {AuthContext} from '../navigation/AuthProvider';
+import Background from "../components/general/Background";
+import {TextField} from "react-native-ui-lib";
+import BBButton from "../components/general/BBButton";
+import DismissKeyboard from "../components/DismissKeyboard";
+import Heading1 from "../components/Heading1";
 
 
 const SignUpScreen = ({navigation}) => {
-    const { register } = useContext(AuthContext);
+    const {register} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -18,7 +21,7 @@ const SignUpScreen = ({navigation}) => {
             console.log("Registering User")
             await register(email, password, userData)
             console.log("User Registered")
-        } catch(e) {
+        } catch (e) {
             console.log(e)
         }
     }
@@ -29,117 +32,63 @@ const SignUpScreen = ({navigation}) => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.action}>
-                <FontAwesome name="user-o" size={20} />
-                <TextInput
+        <TouchableWithoutFeedback onPress={() => DismissKeyboard()}>
+            <View flex paddingH-25 style={styles.container}>
+                <Background/>
+                <Heading1 text="Sign Up"/>
+                <TextField
                     placeholder='Full Name'
-                    placeholderTextColor="#666666"
                     value={userData ? userData.fullname : ''}
                     onChangeText={(txt) => setUserData({...userData, fullname: txt})}
                     numberOfLines={1}
                     keyboardType={'default'}
-                    style={styles.textInput}
                 />
-            </View>
-            <View style={styles.action}>
-                <FontAwesome name="globe" color="#333333" size={20} />
-                <TextInput
+                <TextField
                     placeholder="Country"
-                    placeholderTextColor="#666666"
                     autoCorrect={false}
                     value={userData ? userData.country : ''}
                     onChangeText={(txt) => setUserData({...userData, country: txt})}
-                    style={styles.textInput}
                 />
-            </View>
-            <View style={styles.action}>
-                <MaterialCommunityIcons
-                    name="map-marker-outline"
-                    color="#333333"
-                    size={20}
-                />
-                <TextInput
+                <TextField
                     placeholder="City"
-                    placeholderTextColor="#666666"
                     autoCorrect={false}
                     value={userData ? userData.city : ''}
                     onChangeText={(txt) => setUserData({...userData, city: txt})}
-                    style={styles.textInput}
                 />
-            </View>
-            <View style={styles.action}>
-                <FontAwesome name="envelope-o" size={20} />
-                <TextInput
+                <TextField
                     placeholder='Email Address'
-                    placeholderTextColor="#666666"
                     onChangeText={(email) => setEmail(email)}
                     numberOfLines={1}
                     value={email}
                     keyboardType={'email-address'}
-                    style={styles.textInput}
                 />
-            </View>
-            <View style={styles.action}>
-                <TextInput
+                <TextField
                     placeholder='Password'
-                    placeholderTextColor="#666666"
                     onChangeText={(password) => setPassword(password)}
                     numberOfLines={1}
                     value={password}
                     keyboardType={'default'}
                     secureTextEntry={true}
-                    style={styles.textInput}
                 />
+                <BBButton label={'Add Profile Picture'} onPress={handlePickImage}/>
+                <View center>
+                    <BBButton label="Sign Up"
+                              onPress={registerUser}
+                    />
+                    <Text marginT-100>Already have an account?</Text>
+                    <BBButton label="Login"
+                              onPress={() => navigation.navigate('Login')}
+                    />
+                </View>
             </View>
-            <TouchableOpacity style={styles.userBtn} onPress={() => handlePickImage()}>
-                <Text style={styles.userBtnTxt}>Add Profile Picture</Text>
-            </TouchableOpacity>
-            <Button
-                title='Sign Up'
-                onPress={ () => registerUser() }
-            />
-        </View>
-    );  
+        </TouchableWithoutFeedback>
+    );
 }
 
 const styles = StyleSheet.create({
-	container: {
-        height: '100%',
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-    inputContainer: {
-        width: '80%',
-        height: 20,
-        marginBottom: 20
+    container: {
+        justifyContent: "center",
     },
-    action: {
-        flexDirection: 'row',
-        marginTop: 10,
-        marginBottom: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f2f2f2',
-        paddingBottom: 5,
-    },
-    textInput: {
-        flex: 1,
-        marginTop: Platform.OS === 'ios' ? 0 : -12,
-        paddingLeft: 10,
-        color: '#333333',
-    },
-    userBtn: {
-        borderColor: '#2e64e5',
-        borderWidth: 2,
-        borderRadius: 3,
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        marginHorizontal: 5,
-    },
-    userBtnTxt: {
-        color: '#2e64e5',
-    }
 })
 
 export default SignUpScreen;

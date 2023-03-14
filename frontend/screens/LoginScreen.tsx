@@ -5,6 +5,8 @@ import {AuthContext} from '../navigation/AuthProvider';
 import DismissKeyboard from '../components/DismissKeyboard';
 import Heading1 from "../components/Heading1";
 import BBButton from "../components/general/BBButton";
+import Background from "../components/general/Background";
+import { StyleSheet} from "react-native";
 
 const LoginScreen = ({navigation}) => {
     const {login} = useContext(AuthContext)
@@ -13,7 +15,8 @@ const LoginScreen = ({navigation}) => {
 
     return (
         <TouchableWithoutFeedback onPress={() => DismissKeyboard()}>
-            <View flex paddingH-25>
+            <View flex paddingH-25 style={styles.container}>
+                <Background />
                 <Heading1 text="Login"/>
                 <View>
                     <TextField
@@ -46,5 +49,11 @@ const LoginScreen = ({navigation}) => {
         </TouchableWithoutFeedback>
     )
 };
+
+const styles = StyleSheet.create({
+    container: {
+        justifyContent: 'center',
+    }
+});
 
 export default LoginScreen;

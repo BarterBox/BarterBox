@@ -1,14 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, Image, TouchableWithoutFeedback, Button, StyleSheet, Pressable, Alert, Keyboard } from 'react-native';
+import { View, Text, TextInput, Image, TouchableWithoutFeedback, StyleSheet, Pressable, Alert, Keyboard } from 'react-native';
 import { getFirestore, addDoc, doc, collection, serverTimestamp } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
 import { Platform } from 'react-native';
 import PickImage from '../PickImage';
+import { Button } from 'react-native-ui-lib';
 
 import { storage } from '../../Firebase';
 import MultilineInput from '../MultilineInput';
 import { app } from '../../Firebase';
 import { AuthContext } from '../../navigation/AuthProvider';
+import {Colors} from "react-native-ui-lib";
+import BBButton from "../general/BBButton";
+import {useNavigation} from "@react-navigation/native";
 
 function dismissKeyboard() { if (Platform.OS != "web") { Keyboard.dismiss(); } }
 const db = getFirestore(app);
@@ -18,6 +22,7 @@ const NewItemForm = ({ onSubmit }) => {
     const [itemDescription, setItemDescription] = useState('');
     const [image, setImage] = useState(null);
     const { user } = useContext(AuthContext)
+    const navigation = useNavigation();
 
     const handleAddItem = async () => {
         try {
@@ -76,16 +81,21 @@ const NewItemForm = ({ onSubmit }) => {
                     limit={255}
                     onChangeHandler={text => setItemDescription(text)} />
                 {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-                <Pressable
-                    style={styles.button}
-                    onPress={handlePickImage}>
-                    <Text style={styles.pressableText}>Add Image</Text>
-                </Pressable>
-                <Pressable
-                    style={styles.submitButton}
-                    onPress={handleAddItem} >
-                    <Text style={styles.pressableText}>Submit</Text>
-                </Pressable>
+                <BBButton label={'Add Profile Picture'} onPress={handlePickImage}/>
+                <View style={styles.action}>
+                    <Button
+                        label='Cancel'
+                        borderRadius={10}
+                        backgroundColor={Colors.red30}
+                        onPress={() => navigation.goBack()}
+                    />
+                    <Button
+                        label='Update'
+                        borderRadius={10}
+                        backgroundColor={Colors.green30}
+                        onPress={handleAddItem}
+                    />
+                </View>
             </View>
         </TouchableWithoutFeedback>
 
@@ -97,7 +107,9 @@ export default NewItemForm;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
+        padding: 20,
+        height: '100%',
+        justifyContent: "center",
     },
     textInput: {
         width: "100%",
@@ -117,19 +129,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#007AFF',
         marginTop: 10,
     },
-    submitButton: {
-        justifyContent: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 32,
-        borderRadius: 4,
-        elevation: 3,
-        backgroundColor: '#007AFF',
+    action: {
+        flexDirection: 'row',
         marginTop: 10,
-        alignSelf: "flex-end",
-        position: 'absolute',
-        bottom: 35
+        marginBottom: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f2f2f2',
+        paddingBottom: 5,
+        justifyContent: 'space-between',
     },
-    pressableText: {
-        color: 'white'
-    }
 });
