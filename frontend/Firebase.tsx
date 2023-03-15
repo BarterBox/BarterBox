@@ -1,7 +1,9 @@
 import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/storage'
 import { where, query, collection, doc, getDoc, getDocs, getFirestore } from "firebase/firestore";
+// import 'firebase/firestore';
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDuCfCrzKwNr76dXBYy0A1ZQNigj-rz2aQ",
@@ -19,7 +21,7 @@ if (!firebase.apps.length) {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const storage = firebase.storage()
+const storage = getStorage(app);
 const db = getFirestore(app);
 
 export { app, storage, db }
@@ -40,6 +42,23 @@ export async function getFirestoreCollectionDataWhere(path: string, field: strin
 }
 
 export async function getUserById(userid: string) {
-	const user = await getDoc(doc(db, "Users", userid));
-	return user.data();
+  const user = await getDoc(doc(db, "Users", userid));
+  return user.data();
 }
+
+export async function getUsersFromCity(city: string, excludeUserId: string) {
+  const usersSnapshot = await getDocs(query(collection(db, 'Users'), where('city', '==', city)));
+  const userIDs = usersSnapshot.docs
+    .filter(doc => doc.id !== excludeUserId)
+    .map(doc => doc.id);
+  console.log("UserIds", userIDs);
+  return userIDs;
+};
+
+export async function getItemsByCity(city: string, excludeUserId: string) {
+  const userIDs = await getUsersFromCity(city, excludeUserId);
+  const itemsSnapshot = await getDocs(query(collection(db, 'items'), where('owner', 'in', userIDs)));
+  const items = itemsSnapshot.docs.map(doc => doc.data());
+  console.log("Items:", items); // Add this line
+  return items;
+};
