@@ -4,7 +4,7 @@ import { StyleSheet, ScrollView, Button, Text } from 'react-native';
 import { AuthContext } from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
-import { getFirestoreCollectionDataWhere } from "../Firebase";
+import { getFirestoreCollectionDataWhere, getUserById, getItemsByCity} from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
 import { SearchBar } from '@rneui/themed';
 import { Image } from 'react-native';
@@ -17,7 +17,9 @@ const MarketplaceScreen = ({ navigation }) => {
     const [search, setSearch] = useState("");
 
     const fetchItems = async () => {
-        const items = await getFirestoreCollectionDataWhere("items", "owner", "!=", user.uid);
+        // const items = await getFirestoreCollectionDataWhere("items", "owner", "!=", user.uid);
+        const userCity = await getUserById(user.uid).then((user) => user.city);
+        const items = await getItemsByCity(userCity, user.uid);
         setItems(items as Item[]);
     }
 
