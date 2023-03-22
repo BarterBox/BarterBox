@@ -30,7 +30,7 @@ const MyItemsScreen = ({ navigation }) => {
 			.then((itemSnapshot) => {
 				return itemSnapshot.docs.map((doc, index) => {
 					const { date_uploaded, description, heading, image_url, owner } = doc.data();
-					const item = { date_uploaded, description, heading, image_url, owner };
+					const item = { date_uploaded, description, heading, image_url, owner, id: doc.id };
 					return { id: `${index}`, item: item };
 				});
 			})
