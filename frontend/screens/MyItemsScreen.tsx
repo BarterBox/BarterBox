@@ -12,6 +12,7 @@ const database = getFirestore(app);
 
 const MyItemsScreen = ({ navigation }) => {
 
+	const [tick, setTick] = useState(1)
 	const [userName, setUserName] = useState("User");
 	const [userOwnItems, setUserOwnItems] = useState([]);
 	const [userLoanItems, setUserLoanItems] = useState([]);
@@ -60,8 +61,22 @@ const MyItemsScreen = ({ navigation }) => {
 				setUserLoanItems(itemTypes);
 			})
 			.catch((error) => { return []; });
+		
+	}, [tick]);
 
-	}, []);
+	useEffect(() => {
+		const intervalFunction = () => {
+			setTick(tick => -tick);
+		  };
+	  
+		  // Set up the interval
+		  const intervalId = setInterval(intervalFunction, 5000); // 1000ms = 1s
+	  
+		  // Clean up the interval on unmounting
+		  return () => {
+			clearInterval(intervalId);
+		  };
+	}, [])
 
 	const handleAddItem = () => {
 		navigation.navigate('NewItem')
