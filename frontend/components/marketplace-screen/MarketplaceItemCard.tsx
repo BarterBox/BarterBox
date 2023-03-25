@@ -3,21 +3,12 @@ import React, { StyleSheet, TouchableOpacity } from "react-native";
 import Item from "../../types/Item";
 
 export default function MarketplaceItemCard({ item, onPress }: { item: Item, onPress: () => void }) {
-    console.log(item);
     return (
         <TouchableOpacity onPress={onPress} style={styles.container} >
             <Image style={styles.image} source={{ uri: item.image_url }} />
             <Text style={styles.heading}>{item.heading}</Text>
         </TouchableOpacity>
     )
-    /*
-    return (
-        <TouchableOpacity onPress={onPress} style={styles.container} >
-            <Image style={styles.image} source={{uri: item.image_url}}/>
-            <Text style={styles.heading}>{item.heading}</Text>
-        </TouchableOpacity>
-    )
-    */
 }
 
 const styles = StyleSheet.create({
