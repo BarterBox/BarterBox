@@ -1,11 +1,11 @@
-import {Image, Text, TouchableOpacity} from "react-native-ui-lib";
-import React, {StyleSheet} from "react-native";
+import { View, Image, Text } from "react-native-ui-lib";
+import React, { StyleSheet, TouchableOpacity } from "react-native";
 import Item from "../../types/Item";
 
-export default function MarketplaceItemCard({item, onPress}:{item: Item, onPress: () => void}) {
+export default function MarketplaceItemCard({ item, onPress }: { item: Item, onPress: () => void }) {
     return (
         <TouchableOpacity onPress={onPress} style={styles.container} >
-            <Image style={styles.image} source={{uri: item.image_url}}/>
+            <Image style={styles.image} source={{ uri: item.image_url }} />
             <Text style={styles.heading}>{item.heading}</Text>
         </TouchableOpacity>
     )
