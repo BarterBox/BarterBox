@@ -14,8 +14,6 @@ let unsub;
 
 const ChatsScreen = ({ navigation }) => {
 
-    const {user} = useContext(AuthContext);
-
     const [userData, setUserData] = useState({
         displayName: "User", photoURL: null, email: null
     });
@@ -69,13 +67,6 @@ const ChatsScreen = ({ navigation }) => {
             </View>
             <FlatList
                 data={chats}
-                renderItem={({item}) => {
-                    return <UserCard user={item.correspondant} onPress={() => {
-                        navigation.navigate("Messaging", {chat: item, userid: user.uid})
-                    }}/>
-                }}
-                ItemSeparatorComponent={({}) => {
-                    return <View style={{height: 5}}></View>;
                 renderItem={({ item }) => { return <UserCard user={item.correspondant} onPress={() => { unsub(); navigation.navigate("Messaging", { chat: item, userid: user.uid }) }} /> }}
                 ItemSeparatorComponent={({ }) => {
                     return <View style={{ height: 5 }}></View>;

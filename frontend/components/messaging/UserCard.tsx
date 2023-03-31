@@ -7,7 +7,8 @@ export default function UserCard({
                                      lastMessage,
                                      onPress,
                                      backButton,
-                                 }: { user: User, onPress: () => void, lastMessage?: string, backButton?: boolean }) {
+                                        onBack,
+                                 }: { onBack?:()=>void, user: User, onPress: () => void, lastMessage?: string, backButton?: boolean }) {
     if (!(user.photoURL)) {
         user.photoURL = "https://firebasestorage.googleapis.com/v0/b/barter-box-a2d9f.appspot.com/o/images%2Fquestionmark.png?alt=media&token=ea7e9ace-47e2-461f-9c33-3e4d23f57ec9";
     }
@@ -15,7 +16,7 @@ export default function UserCard({
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
             <View style={styles.imageContainer}>
-                {backButton && <Text onPress={navigate.goBack} style={styles.backButton}>{"<"}</Text>}
+                {backButton && <TouchableOpacity onPress={()=>{onBack();navigate.goBack()}} style={styles.backButton}><Text>{"<"}</Text></TouchableOpacity>}
                 <Image style={styles.image} source={{uri: user.photoURL}}/>
                 <Text style={styles.name}>{user.displayName}</Text>
             </View>

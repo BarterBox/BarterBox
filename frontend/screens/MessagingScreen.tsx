@@ -1,11 +1,11 @@
-import React, {useContext, useState, useEffect} from 'react';
-import {View, KeyboardAvoidingView, FlatList, Text, TextInput} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, KeyboardAvoidingView, FlatList, Text, TextInput, BackHandler, ScrollView} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {app} from '../Firebase';
 import {Button, Colors} from 'react-native-ui-lib';
-import {getFirestore, getDoc, getDocs, setDoc, doc, query, collection, where, onSnapshot} from "firebase/firestore";
+import {getFirestore, getDocs, setDoc, doc, query, collection, onSnapshot} from "firebase/firestore";
+
 import UserCard from '../components/messaging/UserCard';
-import BBButton from "../components/general/BBButton";
 import Background from "../components/general/Background";
 
 const database = getFirestore(app);
@@ -13,6 +13,7 @@ const database = getFirestore(app);
 let unsub;
 
 const MessagingScreen = ({ navigation, route }) => {
+    const scrollViewRef = React.useRef<ScrollView>(null);
 
     const [messages, setMessages] = useState([]);
 
@@ -28,6 +29,7 @@ const MessagingScreen = ({ navigation, route }) => {
 
     const Spacer = <View style={{ height: 5 }}></View>;
     useEffect(() => {
+        if(scrollViewRef.current) scrollViewRef.current.scrollToEnd({ animated: true });
         unsub = onSnapshot(query(collection(database, `chats/${route.params.chat.id}/messages`)), (snapshot) => {
             Promise.all(snapshot.docs.filter((document, index) => {
                 return document.data() && true;
@@ -41,19 +43,20 @@ const MessagingScreen = ({ navigation, route }) => {
         <KeyboardAvoidingView behavior="position" style={styles.container}>
             <Background/>
             <View style={styles.header}>
-                <UserCard backButton user={route.params.chat.correspondant} onPress={() => {
+                <UserCard backButton user={route.params.chat.correspondant} onBack={unsub} onPress={() => {
                 }}></UserCard>
             </View>
-            <FlatList
-                data={messages}
-                renderItem={({item}) => {
-                    if (item.message.sender == route.params.userid) {
-                        return <Text style={styles.user}>{`${item.message.content}`}</Text>
-                    } else {
-                        return <Text style={styles.correspondant}>{`${item.message.content}`}</Text>
-                    }
-                }}
-            />
+            <ScrollView style={styles.chatContainer} ref={scrollViewRef}>
+                {
+                    messages.map((message, index) => {
+                        if (message.message.sender == route.params.userid) {
+                            return <Text key={index} style={styles.user}>{`${message.message.content}`}</Text>
+                        } else {
+                            return <Text key={index} style={styles.correspondant}>{`${message.message.content}`}</Text>
+                        }
+                    })
+                }
+            </ScrollView>
             <View style={styles.inputContainer}>
                 <TextInput style={styles.input} placeholder="Enter a message" value={input} onChangeText={(text) => {
                     setInput(text);
@@ -81,12 +84,18 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         paddingTop: 40,
-
+    },
+    chatContainer: {
+        zIndex: 0,
+        paddingTop: 100,
+        marginBottom: 100,
     },
     header: {
         position: "absolute",
+        width: "100%",
         top: 0,
         left: 0,
+        zIndex: 1,
     },
     user: {
         fontSize: fontsize,
@@ -138,6 +147,10 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
     },
 });
 
