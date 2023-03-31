@@ -4,39 +4,38 @@ import {StyleSheet} from 'react-native';
 import {app} from '../Firebase';
 import {Button, Colors} from 'react-native-ui-lib';
 import {getFirestore, getDoc, getDocs, setDoc, doc, query, collection, where, onSnapshot} from "firebase/firestore";
-
 import UserCard from '../components/messaging/UserCard';
 import BBButton from "../components/general/BBButton";
 import Background from "../components/general/Background";
 
 const database = getFirestore(app);
 
-const MessagingScreen = ({navigation, route}) => {
+let unsub;
+
+const MessagingScreen = ({ navigation, route }) => {
 
     const [messages, setMessages] = useState([]);
 
     const [input, setInput] = useState("");
+
+    BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+            unsub();
+            return false;
+        }
+    )
+
+    const Spacer = <View style={{ height: 5 }}></View>;
     useEffect(() => {
-        (async () => {
-            const messagesQuery = query(collection(database, `chats/${route.params.chat.id}/messages`));
-
-            async function updateMessages() {
-                const messagesDocs = await getDocs(messagesQuery);
-                const messages = messagesDocs.docs
-                    .filter((document) => {
-                        return document.data().content && true
-                    })   //non-blank messages
-                    .map((document, index) => {
-                        return {id: index, message: document.data()}
-                    });
-                setMessages(messages);
-            }
-
-            //load messages with screen
-            updateMessages();
-            //check for updates regularly
-            setInterval(updateMessages, 2000);
-        })();
+        unsub = onSnapshot(query(collection(database, `chats/${route.params.chat.id}/messages`)), (snapshot) => {
+            Promise.all(snapshot.docs.filter((document, index) => {
+                return document.data() && true;
+            })
+                .map((document, index) => {
+                    return { id: index, message: document.data() };
+                })).then((messages) => { setMessages(messages) });
+        });
     }, []);
     return (
         <KeyboardAvoidingView behavior="position" style={styles.container}>

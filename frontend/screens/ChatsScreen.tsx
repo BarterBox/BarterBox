@@ -1,16 +1,18 @@
-import React, {useContext, useState, useEffect} from 'react';
-import {View, Button, FlatList} from 'react-native';
-import {StyleSheet} from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Button, FlatList, BackHandler, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Heading1 from "../components/Heading1";
-import {AuthContext} from '../navigation/AuthProvider';
-import {app, getUserById} from '../Firebase';
-import {getFirestore, getDoc, getDocs, doc, query, collection, where} from "firebase/firestore";
+import { AuthContext } from '../navigation/AuthProvider';
+import { app, getUserById } from '../Firebase';
+import { getFirestore, getDoc, getDocs, doc, query, collection, where, onSnapshot } from "firebase/firestore";
 
 import UserCard from "../components/messaging/UserCard";
 
 const database = getFirestore(app);
 
-const ChatsScreen = ({navigation}) => {
+let unsub;
+
+const ChatsScreen = ({ navigation }) => {
 
     const {user} = useContext(AuthContext);
 
@@ -20,42 +22,44 @@ const ChatsScreen = ({navigation}) => {
 
     const [chats, setChats] = useState([]);
 
+    const { user } = useContext(AuthContext);
+
+    BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+            unsub();
+            return false;
+        }
+    )
+
     useEffect(() => {
         (async () => {
             //get data for the current user
-            const {displayName, image_url = null, email} = await getUserById(user.uid);
-            setUserData({displayName: displayName, photoURL: image_url, email: email});
+            getUserById(user.uid)
+                .then((correspondantData) => {
+                    const { displayName, image_url = null, email } = correspondantData;
+                    setUserData({ displayName: displayName, photoURL: image_url, email: email });
+                })
 
-            async function updateChats() {
-                const chats = [];
-                let chatsQuery = query(collection(database, "chats"), where("user1", "==", user.uid));
-                let chatDocs = await getDocs(chatsQuery);
-                for (const document of chatDocs.docs) {
-                    const {displayName, image_url = null, email} = await getUserById(document.data().user2);
-                    chats.push({
-                        id: document.id,
-                        correspondant: {displayName: displayName, photoURL: image_url, email: email}
-                    });
-                }
-                chatsQuery = query(collection(database, "chats"), where("user2", "==", user.uid));
-                chatDocs = await getDocs(chatsQuery);
-                for (const document of chatDocs.docs) {
-                    const {displayName, image_url = null, email} = await getUserById(document.data().user1);
-                    chats.push({
-                        id: document.id,
-                        correspondant: {displayName: displayName, photoURL: image_url, email: email}
-                    });
-                }
-
-                setChats(chats);
-            }
-
-            //load the chats with the screen
-            await updateChats();
-
-            //check for updates once in a while
-            setInterval(updateChats, 10000)
         })();
+
+        //problem - map function returns an array of promises, app crashes if setChats takes promises
+        //solution: setChats with promise.all so that setChats happens after all promises are resolved
+        unsub = onSnapshot(query(collection(database, "chats")), (snapshot) => {
+            Promise.all(snapshot.docs.filter((document, index) => {
+                const data = document.data();
+                return data.user1 == user.uid || data.user2 == user.uid;
+            })
+                .map((document, index, array) => {
+                    const data = document.data();
+                    const correspondantRole = data.user1 == user.uid ? "user2" : "user1";
+                    return getUserById(document.data()[`${correspondantRole}`])
+                        .then((correspondantData) => {
+                            const { displayName, image_url = null, email } = correspondantData;
+                            return { id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email } };
+                        })
+                })).then((chats) => { setChats(chats) });
+        });
     }, []);
 
     return (
@@ -72,6 +76,9 @@ const ChatsScreen = ({navigation}) => {
                 }}
                 ItemSeparatorComponent={({}) => {
                     return <View style={{height: 5}}></View>;
+                renderItem={({ item }) => { return <UserCard user={item.correspondant} onPress={() => { unsub(); navigation.navigate("Messaging", { chat: item, userid: user.uid }) }} /> }}
+                ItemSeparatorComponent={({ }) => {
+                    return <View style={{ height: 5 }}></View>;
                 }}
             />
         </View>
