@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Alert, Image } from 'react-native';
 import { Button, Colors } from 'react-native-ui-lib';
 import { StyleSheet } from 'react-native';
 import Background from "../components/general/Background";
 
-import { app, getUserById } from '../Firebase';
-import { getFirestore, getDoc, getDocs, addDoc, deleteDoc, setDoc, doc, query, collection, where, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { app, getUserById, getMostRecentItemRequest } from '../Firebase';
+import { getFirestore, getDoc, getDocs, addDoc, deleteDoc, setDoc, doc, query, collection, where, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import BBButton from "../components/general/BBButton";
 
 const database = getFirestore(app);
@@ -33,13 +33,40 @@ const handleRequestItem = async (item, userID, callback) => {
         callback()
     }
     catch (err) {
-        alert("There was an error requesting this item. Please try again later")
+        alert("There was an error requesting this item. Please try again later.")
+        console.log(err)
+    }
+}
+
+const handleAcceptRequest = async (item, request, callback) => {
+    const requestRef = doc(database, "items", item.id, "requests", request.id)
+    const itemRef = doc(database, "items", item.id)
+    // update request to "accepted"
+    try {
+        await updateDoc(requestRef, {
+            status: "accepted",
+            date_accepted: serverTimestamp(),
+        })
+        await updateDoc(itemRef, {
+            borrowed: true,
+            borrowedBy: request.requestedBy,
+        })
+        callback()
+    } catch (err) {
+        alert("There was an error accepting the request. Please try again later.")
         console.log(err)
     }
 }
 
 const ItemDetailsScreen = ({ navigation, route }) => {
     const item = route.params.item.item ? route.params.item.item : route.params.item;
+    const [recentRequest, setRecentRequest] = useState(null);
+
+    useEffect(() => {
+       getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
+                                        .catch(err => console.log(err))
+    }, [])
+    
     return (
         <View style={styles.container}>
             <Background />
@@ -97,6 +124,23 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                                     }
                     } />)}
                 
+                {item.owner == route.params.userid && recentRequest != null ? 
+                    (<>
+                        <View>
+                            <Text>
+                                Request by {recentRequest.requestedBy}
+                            </Text>
+                            <View style={styles.requestButtonsContainer}>
+                                <BBButton label={`Accept`}
+                                    onPress={() =>handleAcceptRequest(item, recentRequest, () => alert("Request Accepted"))} />
+                                <BBButton label={`Reject`}
+                                    onPress={() => alert("Request rejected")} />
+                            </View>
+                        </View>
+                        
+                    </>) : 
+                    (<></>)}
+                
                 <View style={{ position: 'absolute', bottom: 0, width: "112%" }}>
                     <Button label={"Back"} onPress={() => navigation.goBack()}
                         borderRadius={20} backgroundColor={Colors.red20} />
@@ -146,6 +190,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+    },
+    requestButtonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
     }
 });
 
