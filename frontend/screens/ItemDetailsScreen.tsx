@@ -58,14 +58,29 @@ const handleAcceptRequest = async (item, request, callback) => {
     }
 }
 
+const handleRejectRequest = async (item, request, callback) => {
+    const requestRef = doc(database, "items", item.id, "requests", request.id)
+    // update request to "accepted"
+    try {
+        await updateDoc(requestRef, {
+            status: "rejected",
+            date_rejected: serverTimestamp(),
+        })
+        callback()
+    } catch (err) {
+        alert("There was an error rejecting the request. Please try again later.")
+        console.log(err)
+    }
+}
+
 const ItemDetailsScreen = ({ navigation, route }) => {
     const item = route.params.item.item ? route.params.item.item : route.params.item;
     const [recentRequest, setRecentRequest] = useState(null);
-    console.log(item)
+    const [refreshRequest, setRefreshRequests] = useState(1)
     useEffect(() => {
         getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
             .catch(err => console.log(err))
-    }, [])
+    }, [refreshRequest])
 
     return (
         <View style={styles.container}>
@@ -134,7 +149,10 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                                 <BBButton label={`Accept`}
                                     onPress={() => handleAcceptRequest(item, recentRequest, () => alert("Request Accepted"))} />
                                 <BBButton label={`Reject`}
-                                    onPress={() => alert("Request rejected")} />
+                                    onPress={() => handleRejectRequest(item, recentRequest, () => {
+                                        alert("Request rejected")
+                                        setRefreshRequests(-refreshRequest)
+                                    })} />
                             </View>
                         </View>
 
