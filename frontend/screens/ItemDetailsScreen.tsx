@@ -49,7 +49,7 @@ const handleAcceptRequest = async (item, request, callback) => {
         })
         await updateDoc(itemRef, {
             borrowed: true,
-            borrowedBy: request.requestedBy,
+            borrowed_by: request.requestedBy,
         })
         callback()
     } catch (err) {
@@ -61,12 +61,12 @@ const handleAcceptRequest = async (item, request, callback) => {
 const ItemDetailsScreen = ({ navigation, route }) => {
     const item = route.params.item.item ? route.params.item.item : route.params.item;
     const [recentRequest, setRecentRequest] = useState(null);
-
+    console.log(item)
     useEffect(() => {
-       getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
-                                        .catch(err => console.log(err))
+        getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
+            .catch(err => console.log(err))
     }, [])
-    
+
     return (
         <View style={styles.container}>
             <Background />
@@ -113,18 +113,18 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                     const { displayName, image_url, email } = await getUserById(item.owner);
                     navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
                 }}></BBButton>
-                
-                {item.owner == route.params.userid ? 
-                    (<BBButton label="Delete" onPress={async () => await handleDeleteItem(item, navigation.goBack)} />) : 
-                    (<BBButton label="Request" 
-                               onPress={async () => {
-                                    await handleRequestItem(item, 
-                                                            route.params.userid, 
-                                                            () => alert("Item requested succesfully"))
-                                    }
-                    } />)}
-                
-                {item.owner == route.params.userid && recentRequest != null ? 
+
+                {item.owner == route.params.userid ?
+                    (<BBButton label="Delete" onPress={async () => await handleDeleteItem(item, navigation.goBack)} />) :
+                    (<BBButton label="Request"
+                        onPress={async () => {
+                            await handleRequestItem(item,
+                                route.params.userid,
+                                () => alert("Item requested succesfully"))
+                        }
+                        } />)}
+
+                {item.owner == route.params.userid && !item.borrowed && recentRequest != null ?
                     (<>
                         <View>
                             <Text>
@@ -132,15 +132,26 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                             </Text>
                             <View style={styles.requestButtonsContainer}>
                                 <BBButton label={`Accept`}
-                                    onPress={() =>handleAcceptRequest(item, recentRequest, () => alert("Request Accepted"))} />
+                                    onPress={() => handleAcceptRequest(item, recentRequest, () => alert("Request Accepted"))} />
                                 <BBButton label={`Reject`}
                                     onPress={() => alert("Request rejected")} />
                             </View>
                         </View>
-                        
-                    </>) : 
+
+                    </>) :
                     (<></>)}
-                
+
+                {item.owner == route.params.userid && item.borrowed  ?
+                    (<>
+                        <View>
+                            <Text>
+                                Currently borrowed by: {item.borrowed_by}
+                            </Text>
+                        </View>
+
+                    </>) :
+                    (<></>)}
+
                 <View style={{ position: 'absolute', bottom: 0, width: "112%" }}>
                     <Button label={"Back"} onPress={() => navigation.goBack()}
                         borderRadius={20} backgroundColor={Colors.red20} />
