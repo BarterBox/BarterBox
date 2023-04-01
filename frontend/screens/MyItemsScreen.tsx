@@ -70,7 +70,7 @@ const MyItemsScreen = ({ navigation }) => {
 		  };
 	  
 		  // Set up the interval
-		  const intervalId = setInterval(intervalFunction, 10000); // 1000ms = 1s
+		  const intervalId = setInterval(intervalFunction, 60000); // 1000ms = 1s
 	  
 		  // Clean up the interval on unmounting
 		  return () => {

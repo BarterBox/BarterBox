@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 import Background from "../components/general/Background";
 
 import { app, getUserById } from '../Firebase';
-import { getFirestore, getDoc, getDocs, addDoc, deleteDoc, setDoc, doc, query, collection, where, onSnapshot } from "firebase/firestore";
+import { getFirestore, getDoc, getDocs, addDoc, deleteDoc, setDoc, doc, query, collection, where, onSnapshot, serverTimestamp } from "firebase/firestore";
 import BBButton from "../components/general/BBButton";
 
 const database = getFirestore(app);
@@ -18,6 +18,23 @@ const handleDeleteItem = async (item, callback) => {
     }
     catch (err) {
         alert("Error deleting this item.")
+    }
+}
+
+const handleRequestItem = async (item, userID, callback) => {
+    const collectionRef = collection(database, `items/${item.id}/requests`)
+    const requestData = {
+        requestedBy: userID,
+        date: serverTimestamp(),
+        status: "open"
+    }
+    try {
+        await addDoc(collectionRef, requestData)
+        callback()
+    }
+    catch (err) {
+        alert("There was an error requesting this item. Please try again later")
+        console.log(err)
     }
 }
 
@@ -69,7 +86,17 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                     const { displayName, image_url, email } = await getUserById(item.owner);
                     navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
                 }}></BBButton>
-                {item.owner == route.params.userid ? (<BBButton label="Delete" onPress={async () => await handleDeleteItem(item, navigation.goBack)} />) : (<></>)}
+                
+                {item.owner == route.params.userid ? 
+                    (<BBButton label="Delete" onPress={async () => await handleDeleteItem(item, navigation.goBack)} />) : 
+                    (<BBButton label="Request" 
+                               onPress={async () => {
+                                    await handleRequestItem(item, 
+                                                            route.params.userid, 
+                                                            () => alert("Item requested succesfully"))
+                                    }
+                    } />)}
+                
                 <View style={{ position: 'absolute', bottom: 0, width: "112%" }}>
                     <Button label={"Back"} onPress={() => navigation.goBack()}
                         borderRadius={20} backgroundColor={Colors.red20} />
