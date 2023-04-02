@@ -1,14 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FlatList, StyleSheet, Text } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Button } from 'react-native';
 import Heading1 from '../components/Heading1';
 import { AuthContext } from '../navigation/AuthProvider';
-import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { app } from '../Firebase';
-import {View, Button, Colors} from 'react-native-ui-lib';
+import { Colors } from 'react-native-ui-lib';
 import MarketplaceItemCard from '../components/marketplace-screen/MarketplaceItemCard';
 import Background from "../components/general/Background";
 
 const database = getFirestore(app);
+
+let unsubItems;
+let unsubLoans;
 
 const MyItemsScreen = ({ navigation }) => {
 
@@ -27,56 +30,33 @@ const MyItemsScreen = ({ navigation }) => {
 			.catch((error) => { setUserName("N/A"); });
 
 		const ownItemSelection = query(collection(database, "items"), where("owner", "==", user.uid));
-		getDocs(ownItemSelection)
-			.then((itemSnapshot) => {
-				return itemSnapshot.docs.map((doc, index) => {
-					const { date_uploaded, description, heading, image_url, owner } = doc.data();
-					const item = { date_uploaded, description, heading, image_url, owner, id: doc.id };
-					return { id: `${index}`, item: item };
-				});
-			})
-			.then((items) => { setUserOwnItems(items); })
-			.catch((error) => { setUserOwnItems([]); });
+		unsubItems = onSnapshot(ownItemSelection, (snapshot) => {
+			setUserOwnItems(snapshot.docs.map((doc, index) => {
+				const { date_uploaded, description, heading, image_url, owner } = doc.data();
+				const item = { date_uploaded, description, heading, image_url, owner, id: doc.id };
+				return { id: `${index}`, item: item };
+			}))
+		})
 
 		const loanSelection = query(collection(database, "loans"), where("borrower", "==", user.uid));
-		getDocs(loanSelection)
-			.then((loanSnapshot) => { return loanSnapshot.docs.map((doc, index) => { return doc.data().item; }); })
-			.then(async (items) => {	//this is the only way I was able to have loaned items' names show
-				let itemTypes = [];
-				let index = 0;
-				for (const item of items) {
-					const itemSelection = doc(database, "items", item);
-					await (getDoc(itemSelection)
-						.then((itemSnapshot) => { return itemSnapshot.data(); })
-						//.then((itemAttributes) => { return itemAttributes.heading; })
-						//.then((heading) => { itemHeaders.push({ id: `${index}`, heading: `${heading}` }) }))
-						.then((itemAttributes) => {
-							const { date_uploaded, description, heading, image_url, owner } = itemAttributes;
-							const itemType = { date_uploaded, description, heading, image_url, owner };
-							itemTypes.push({ id: `${index}`, item: itemType });
-						})
-						.catch((error) => { }));
-					index++;
-				}
-				setUserLoanItems(itemTypes);
-			})
-			.catch((error) => { return []; });
-		
-	}, [tick]);
+		unsubLoans = onSnapshot(loanSelection, (snapshot) => {
+			Promise.all(
+				snapshot.docs.map((doc) => { return doc.data().item })
+					.map((item, index) => {
+						return getDoc(doc(database, "items", item))
+							.then((itemSnapshot) => { return itemSnapshot.data() })
+							.then((itemAttributes) => {
+								const { date_uploaded, description, heading, image_url, owner } = itemAttributes;
+								const itemType = { date_uploaded, description, heading, image_url, owner };
+								return { id: `${index}`, item: itemType };
+							})
+					})
+			).then((loanItems) => { setUserLoanItems(loanItems) });
+		})
 
-	useEffect(() => {
-		const intervalFunction = () => {
-			setTick(tick => -tick);
-		  };
-	  
-		  // Set up the interval
-		  const intervalId = setInterval(intervalFunction, 10000); // 1000ms = 1s
-	  
-		  // Clean up the interval on unmounting
-		  return () => {
-			clearInterval(intervalId);
-		  };
-	}, [])
+		return () => { unsubItems(); unsubLoans(); }
+
+	}, []);
 
 	const handleAddItem = () => {
 		navigation.navigate('NewItem')
@@ -88,7 +68,7 @@ const MyItemsScreen = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<Background />
-			<Heading1 text={`${userName}'s Items`}/>
+			<Heading1 text={`${userName}'s Items`} />
 			<Text style={styles.smallTitle}>Borrowed items</Text>
 			<FlatList
 				contentContainerStyle={{
@@ -130,6 +110,7 @@ const MyItemsScreen = ({ navigation }) => {
 				ListFooterComponent={Footer}
 			/>
 			<Button
+				title="+"
 				label="+"
 				labelStyle={{ fontSize: 30, color: Colors.white }}
 				style={{
