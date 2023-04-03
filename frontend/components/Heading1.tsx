@@ -4,7 +4,7 @@ import React from 'react'
 export default function Heading1({ text, img }: { text: string, img?: string}) {
     return (
         <View row marginT-20 marginB-20>
-            {img && <Image source={img} style={{width: 30, height: 30}}/>}
+            {img && <Image source={{uri:img}} style={{width: 50, height: 50}}/>}
             <Text text50>{text}</Text>
         </View>
     )

@@ -1,16 +1,19 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { View, KeyboardAvoidingView, Button, FlatList, Text, TextInput, BackHandler } from 'react-native';
-import { StyleSheet } from 'react-native';
-import { app } from '../Firebase';
-import { getFirestore, getDoc, getDocs, setDoc, doc, query, collection, where, onSnapshot } from "firebase/firestore";
+import React, {useState, useEffect} from 'react';
+import {View, KeyboardAvoidingView, FlatList, Text, TextInput, BackHandler, ScrollView} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {app} from '../Firebase';
+import {Button, Colors} from 'react-native-ui-lib';
+import {getFirestore, getDocs, setDoc, doc, query, collection, onSnapshot} from "firebase/firestore";
 
 import UserCard from '../components/messaging/UserCard';
+import Background from "../components/general/Background";
 
 const database = getFirestore(app);
 
 let unsub;
 
 const MessagingScreen = ({ navigation, route }) => {
+    const scrollViewRef = React.useRef<ScrollView>(null);
 
     const [messages, setMessages] = useState([]);
 
@@ -26,6 +29,7 @@ const MessagingScreen = ({ navigation, route }) => {
 
     const Spacer = <View style={{ height: 5 }}></View>;
     useEffect(() => {
+        if(scrollViewRef.current) scrollViewRef.current.scrollToEnd({ animated: true });
         unsub = onSnapshot(query(collection(database, `chats/${route.params.chat.id}/messages`)), (snapshot) => {
             Promise.all(snapshot.docs.filter((document, index) => {
                 return document.data() && true;
@@ -37,32 +41,27 @@ const MessagingScreen = ({ navigation, route }) => {
     }, []);
     return (
         <KeyboardAvoidingView behavior="position" style={styles.container}>
-            <View style={{ alignItems: "center" }}>
-                <UserCard user={route.params.chat.correspondant} onPress={() => { }}></UserCard>
+            <Background/>
+            <View style={styles.header}>
+                <UserCard backButton user={route.params.chat.correspondant} onBack={unsub} onPress={() => {
+                }}></UserCard>
             </View>
-            {Spacer}
-            <View style={{ borderColor: "#000", borderWidth: 5 }}>
-                <Button title="Go back" onPress={() => { unsub(); navigation.navigate("Chats") }}></Button>
-            </View>
-            {Spacer}
-            <FlatList
-                data={messages}
-                renderItem={({ item }) => {
-                    if (item.message.sender == route.params.userid) {
-                        return <Text style={styles.user} >{`You: ${item.message.content}`}</Text>
-                    }
-                    else {
-                        return <Text style={styles.correspondant} >{`${route.params.chat.correspondant.displayName}: ${item.message.content}`}</Text>
-                    }
-                }}
-            />
-            {Spacer}
-            <View style={{ borderColor: "#000", borderWidth: 1 }}>
-                <TextInput placeholder="Enter a message" value={input} onChangeText={(text) => { setInput(text); }}></TextInput>
-            </View>
-            {Spacer}
-            <View style={{ borderColor: "#000", borderWidth: 5 }}>
-                <Button title="Send message" onPress={() => {
+            <ScrollView style={styles.chatContainer} ref={scrollViewRef}>
+                {
+                    messages.map((message, index) => {
+                        if (message.message.sender == route.params.userid) {
+                            return <Text key={index} style={styles.user}>{`${message.message.content}`}</Text>
+                        } else {
+                            return <Text key={index} style={styles.correspondant}>{`${message.message.content}`}</Text>
+                        }
+                    })
+                }
+            </ScrollView>
+            <View style={styles.inputContainer}>
+                <TextInput style={styles.input} placeholder="Enter a message" value={input} onChangeText={(text) => {
+                    setInput(text);
+                }}/>
+                <Button backgroundColor={Colors.green10} style={styles.sendButton} label="Send" onPress={() => {
                     //unix millis to have really low chance of two documents writing with the same id (lazy solution)
                     setDoc(doc(database, `chats/${route.params.chat.id}/messages`, `${Date.now()}`), {
                         content: input,
@@ -82,17 +81,76 @@ const bottomMargin = 15;
 
 const styles = StyleSheet.create({
     container: {
-        top: topMargin,
-        bottom: bottomMargin,
-        backgroundColor: "#fff",
+        flex: 1,
+        flexDirection: 'column',
+        paddingTop: 40,
+    },
+    chatContainer: {
+        zIndex: 0,
+        paddingTop: 100,
+        marginBottom: 100,
+    },
+    header: {
+        position: "absolute",
+        width: "100%",
+        top: 0,
+        left: 0,
+        zIndex: 1,
     },
     user: {
         fontSize: fontsize,
-        backgroundColor: "#DFF",
+        marginTop: topMargin,
+        marginBottom: bottomMargin,
+        marginLeft: 10,
+        marginRight: 10,
+        textAlign: "right",
+        alignSelf: "flex-end",
+        backgroundColor: "#000",
+        color: "#fff",
+        borderRadius: 10,
+        padding: 10,
     },
     correspondant: {
         fontSize: fontsize,
-        backgroundColor: "#BEF",
+        marginTop: topMargin,
+        marginBottom: bottomMargin,
+        marginLeft: 10,
+        marginRight: 10,
+        textAlign: "left",
+        alignSelf: "flex-start",
+        backgroundColor: "#aaa",
+        color: "#000",
+        borderRadius: 10,
+        padding: 10,
+    },
+    input: {
+        fontSize: fontsize,
+        marginTop: topMargin,
+        marginBottom: bottomMargin,
+        marginLeft: 10,
+        marginRight: 10,
+        color: "#000",
+        borderRadius: 10,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "#000",
+        height: 50,
+        width: "70%",
+    },
+    sendButton: {
+        height: 50,
+        width: "20%",
+        position: "relative",
+        top: 8,
+        right: 0,
+    },
+    inputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
     },
 });
 

@@ -62,7 +62,9 @@ const ChatsScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Heading1 text={`${userData.displayName}'s chats`}></Heading1>
+            <View style={{paddingLeft: 20}}>
+                <Heading1 text={`${userData.displayName}'s chats`}></Heading1>
+            </View>
             <FlatList
                 data={chats}
                 renderItem={({ item }) => { return <UserCard user={item.correspondant} onPress={() => { unsub(); navigation.navigate("Messaging", { chat: item, userid: user.uid }) }} /> }}
@@ -76,10 +78,10 @@ const ChatsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        top: 35,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: '#fff',
+        paddingTop: 40,
     },
 });
 
