@@ -79,6 +79,9 @@ export async function getMostRecentItemRequest(itemId: string) {
 			let request = doc.data()
 			request.id = doc.id
 			console.log(doc.id, ' => ', request);
+			let userData = await getUserById(request.requestedBy);
+			userData.id = request.requestedBy
+			request.requestedBy = userData
 			return request
 		} else {
 			console.log('No requests found');

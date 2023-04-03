@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Alert, Image } from 'react-native';
 import { Button, Colors } from 'react-native-ui-lib';
 import { StyleSheet } from 'react-native';
@@ -7,6 +7,7 @@ import Background from "../components/general/Background";
 import { app, getUserById, getMostRecentItemRequest } from '../Firebase';
 import { getFirestore, getDoc, getDocs, addDoc, deleteDoc, setDoc, doc, query, collection, where, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import BBButton from "../components/general/BBButton";
+import { AuthContext } from '../navigation/AuthProvider';
 
 const database = getFirestore(app);
 
@@ -41,6 +42,7 @@ const handleRequestItem = async (item, userID, callback) => {
 const handleAcceptRequest = async (item, request, callback) => {
     const requestRef = doc(database, "items", item.id, "requests", request.id)
     const itemRef = doc(database, "items", item.id)
+    const loansRef = collection(database, "loans")
     // update request to "accepted"
     try {
         await updateDoc(requestRef, {
@@ -50,6 +52,10 @@ const handleAcceptRequest = async (item, request, callback) => {
         await updateDoc(itemRef, {
             borrowed: true,
             borrowed_by: request.requestedBy,
+        })
+        await addDoc(loansRef, {
+            borrower: request.requestedBy.id,
+            item: item.id,
         })
         callback()
     } catch (err) {
@@ -75,13 +81,14 @@ const handleRejectRequest = async (item, request, callback) => {
 
 const ItemDetailsScreen = ({ navigation, route }) => {
     const item = route.params.item.item ? route.params.item.item : route.params.item;
+    const {user} = useContext(AuthContext)
     const [recentRequest, setRecentRequest] = useState(null);
     const [refreshRequest, setRefreshRequests] = useState(1)
     useEffect(() => {
         getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
             .catch(err => console.log(err))
     }, [refreshRequest])
-
+    
     return (
         <View style={styles.container}>
             <Background />
@@ -92,7 +99,8 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                 <Text></Text>
                 <Text>Description:</Text>
                 <Text>{item.description}</Text>
-                <BBButton label="Message owner" onPress={async () => {
+                
+                {item.owner != route.params.userid && <BBButton label="Message owner" onPress={async () => {
 
                     if (item.owner == route.params.userid) {
                         Alert.alert("You can't create a conversation with yourself");
@@ -127,7 +135,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                     //navigate to the new chat created (or existing)
                     const { displayName, image_url, email } = await getUserById(item.owner);
                     navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
-                }}></BBButton>
+                }}></BBButton>}
 
                 {item.owner == route.params.userid ?
                     (<BBButton label="Delete" onPress={async () => await handleDeleteItem(item, navigation.goBack)} />) :
@@ -143,7 +151,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                     (<>
                         <View>
                             <Text>
-                                Request by {recentRequest.requestedBy}
+                                Request by {recentRequest.requestedBy.displayName}
                             </Text>
                             <View style={styles.requestButtonsContainer}>
                                 <BBButton label={`Accept`}
@@ -163,7 +171,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                     (<>
                         <View>
                             <Text>
-                                Currently borrowed by: {item.borrowed_by}
+                                Currently borrowed by: {item.borrowed_by.displayName}
                             </Text>
                         </View>
 
