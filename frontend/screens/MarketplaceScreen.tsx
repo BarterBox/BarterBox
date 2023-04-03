@@ -91,22 +91,22 @@ const MarketplaceScreen = ({ navigation }) => {
   Select a category: 
     <select value={category} onChange={handleChange}>
 
-    <option value="vehicles">vehicles</option>
+    <option value="vehicles">Vehicles</option>
 
-    <option value="womensclothing&shoes">womens clothing & shoes</option>
+    <option value="womensclothing&shoes">Womens clothing & shoes</option>
 
-    <option value="mensclothing&shoes">mens clothing & shoes</option>
+    <option value="mensclothing&shoes">Mens clothing & shoes</option>
 
-    <option value="furniture">furniture</option>
-    <option value="electronics">electronics</option>
+    <option value="furniture">Furniture</option>
+    <option value="electronics">Electronics</option>
 
-    <option value="appliances">appliances</option>
-    <option value="baby">baby</option>
-    <option value="booksfilmmusic">books, films & music</option>
-    <option value="car">car</option>
-    <option value="health&beauty">health & beauty</option>
-    <option value="toys">toys</option>
-    <option value="sports">sporting goods</option>
+    <option value="appliances">Appliances</option>
+    <option value="baby">Baby</option>
+    <option value="booksfilmmusic">Books, films & music</option>
+    <option value="car">Car</option>
+    <option value="health&beauty">Health & beauty</option>
+    <option value="toys">Toys</option>
+    <option value="sports">Sporting goods</option>
 
 
     </select>

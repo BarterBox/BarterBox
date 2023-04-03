@@ -68,21 +68,21 @@ const NewItemForm = ({ onSubmit }) => {
     }
 
     const options = [
-        {label: 'vehicles', value: 'vehicles'},
-        {label: 'womens clothing & shoes', value: 'womensclothing&shoes'},
-        {label: 'mens clothing & shoes', value: 'mensclothing&shoes'},
+        {label: 'Vehicles', value: 'vehicles'},
+        {label: 'Womens clothing & shoes', value: 'womensclothing&shoes'},
+        {label: 'Mens clothing & shoes', value: 'mensclothing&shoes'},
 
-        {label: 'furniture', value: 'furniture'},
-        {label: 'electronics', value: 'electronics'},
-        {label: 'appliances', value: 'appliances'},
+        {label: 'Furniture', value: 'furniture'},
+        {label: 'Electronics', value: 'electronics'},
+        {label: 'Appliances', value: 'appliances'},
 
-        {label: 'baby', value: 'baby'},
-        {label: 'books, films & music', value: 'booksfilmmusic'},
-        {label: 'car', value: 'car'},
+        {label: 'Baby', value: 'baby'},
+        {label: 'Books, films & music', value: 'booksfilmmusic'},
+        {label: 'Car', value: 'car'},
 
-        {label: 'health & beauty', value: 'health&beauty'},
-        {label: 'toys', value: 'toys'},
-        {label: 'sporting goods', value: 'sports'},
+        {label: 'Health & beauty', value: 'health&beauty'},
+        {label: 'Toys', value: 'toys'},
+        {label: 'Sporting goods', value: 'sports'},
       ];
 
     return (
