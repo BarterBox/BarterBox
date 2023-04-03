@@ -109,7 +109,7 @@ const NewItemForm = ({ onSubmit }) => {
                     limit={255}
                     onChangeHandler={text => setItemDescription(text)} />
                 {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-                <BBButton label={'Add Profile Picture'} onPress={handlePickImage}/>
+                <BBButton label={'Add Picture of Item'} onPress={handlePickImage}/>
                 <View style={styles.action}>
                     <Button
                         label='Cancel'
