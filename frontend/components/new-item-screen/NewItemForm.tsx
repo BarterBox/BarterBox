@@ -46,6 +46,8 @@ const NewItemForm = ({ onSubmit }) => {
                 owner: user.uid,
                 category: itemCategory,
                 date_uploaded: serverTimestamp(),
+                borrowed: false,
+                borrowed_by: "",
             })
 
             // Reset the form

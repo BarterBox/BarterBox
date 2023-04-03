@@ -23,12 +23,11 @@ const MarketplaceScreen = ({ navigation }) => {
         setItems(items as Item[]);
     }
 
-
     const updateSearch = (search) => {
         setSearch(search);
         searchData(search);
-
     };
+    
     const searchData = (search) => {
         const searchedItems = [];
         for (let i = 0; i < items.length; i++) {
@@ -38,10 +37,7 @@ const MarketplaceScreen = ({ navigation }) => {
         }
         console.log(searchedItems.length);
         setSearchedItems(searchedItems)
-
-
     }
-
 
     useEffect(() => {
         fetchItems()

@@ -30,8 +30,8 @@ const MyItemsScreen = ({ navigation }) => {
 		getDocs(ownItemSelection)
 			.then((itemSnapshot) => {
 				return itemSnapshot.docs.map((doc, index) => {
-					const { date_uploaded, description, heading, image_url, owner } = doc.data();
-					const item = { date_uploaded, description, heading, image_url, owner, id: doc.id };
+					let item = doc.data();
+					item.id = doc.id 
 					return { id: `${index}`, item: item };
 				});
 			})
@@ -51,9 +51,8 @@ const MyItemsScreen = ({ navigation }) => {
 						//.then((itemAttributes) => { return itemAttributes.heading; })
 						//.then((heading) => { itemHeaders.push({ id: `${index}`, heading: `${heading}` }) }))
 						.then((itemAttributes) => {
-							const { date_uploaded, description, heading, image_url, owner } = itemAttributes;
-							const itemType = { date_uploaded, description, heading, image_url, owner };
-							itemTypes.push({ id: `${index}`, item: itemType });
+							let item = itemAttributes
+							itemTypes.push({ id: `${index}`, item: item })
 						})
 						.catch((error) => { }));
 					index++;
@@ -70,7 +69,7 @@ const MyItemsScreen = ({ navigation }) => {
 		  };
 	  
 		  // Set up the interval
-		  const intervalId = setInterval(intervalFunction, 10000); // 1000ms = 1s
+		  const intervalId = setInterval(intervalFunction, 60000); // 1000ms = 1s
 	  
 		  // Clean up the interval on unmounting
 		  return () => {
