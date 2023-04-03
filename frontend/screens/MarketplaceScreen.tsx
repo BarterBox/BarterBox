@@ -15,7 +15,18 @@ const MarketplaceScreen = ({ navigation }) => {
     const [items, setItems] = useState<Item[]>([]);
     const [searchedItems, setSearchedItems] = useState<Item[]>([]);
     const [search, setSearch] = useState("");
+    const [category, setcategory] = React.useState('home');
 
+    const handleChange = (event) => {
+   
+        setcategory(event.target.value);
+        console.log('set category working  '+event.target.value);
+  
+        updatecategory(event.target.value);
+        console.log('category working '+event.target.value);
+      
+      };
+  
     const fetchItems = async () => {
         // const items = await getFirestoreCollectionDataWhere("items", "owner", "!=", user.uid);
         const userCity = await getUserById(user.uid).then((user) => user.city);
@@ -39,6 +50,25 @@ const MarketplaceScreen = ({ navigation }) => {
         setSearchedItems(searchedItems)
     }
 
+    const updatecategory = (category) => {
+        searchCategory(category)
+
+    };
+    const searchCategory = (category) => {
+        const searchedItems = [];
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].category === category) {
+                searchedItems.push(items[i]);
+            }
+            
+        }
+        console.log(searchedItems.length);
+        setSearchedItems(searchedItems)
+
+
+    }
+
+
     useEffect(() => {
         fetchItems()
     }, []);
@@ -54,6 +84,38 @@ const MarketplaceScreen = ({ navigation }) => {
                     value={search}
                 />
             </View>
+            <div>
+
+<label>
+
+  Select a category: 
+    <select value={category} onChange={handleChange}>
+
+    <option value="vehicles">vehicles</option>
+
+    <option value="womensclothing&shoes">womens clothing & shoes</option>
+
+    <option value="mensclothing&shoes">mens clothing & shoes</option>
+
+    <option value="furniture">furniture</option>
+    <option value="electronics">electronics</option>
+
+    <option value="appliances">appliances</option>
+    <option value="baby">baby</option>
+    <option value="booksfilmmusic">books, films & music</option>
+    <option value="car">car</option>
+    <option value="health&beauty">health & beauty</option>
+    <option value="toys">toys</option>
+    <option value="sports">sporting goods</option>
+
+
+    </select>
+ 
+
+</label>
+
+</div>
+
 
             <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
                 {
