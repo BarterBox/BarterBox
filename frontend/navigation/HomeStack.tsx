@@ -24,25 +24,25 @@ export default function HomeStack() {
               ? 'home'
               : 'home-outline';
           }
-          else if (route.name === 'Marketplace') {
+          else if (route.name === 'MarketplaceScreen') {
             iconName = focused ? 'ios-apps' : 'ios-apps-outline';
           }
-          else if (route.name === 'Profile') {
+          else if (route.name === 'ProfileScreen') {
             iconName = focused ? 'ios-people' : 'ios-people-outline';
           }
-          else if (route.name == "Messaging") {
+          else if (route.name == "MessagingScreen") {
             iconName = focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"
           }
-          else if (route.name === 'Items') {
+          else if (route.name === 'ItemsScreen') {
             iconName = focused ? 'pricetag' : 'pricetag-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}>
-      <Tab.Screen name='Marketplace' component={MarketplaceStack} />
-      <Tab.Screen name='Items' component={MyItemsStack} />
-      <Tab.Screen name="Messaging" component={MessagingStack} />
-      <Tab.Screen name='Profile' component={ProfileStack} />
+      <Tab.Screen name='MarketplaceScreen' component={MarketplaceStack} />
+      <Tab.Screen name='ItemsScreen' component={MyItemsStack} />
+      <Tab.Screen name="MessagingScreen" component={MessagingStack} />
+      <Tab.Screen name='ProfileScreen' component={ProfileStack} />
     </Tab.Navigator>
   );
 }
