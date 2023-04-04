@@ -119,8 +119,7 @@ const RatingScreen = ({navigation, route}) => {
             <BBButton
                 label='Rate The User'
                 onPress={() => {
-                    const ratingString = "" + defaultRating + "/" + Math.max.apply(null, maxRating);
-                    updateUserRating(ratingString);
+                    updateUserRating(defaultRating);
                     navigation.goBack() 
                 }}
                 />
