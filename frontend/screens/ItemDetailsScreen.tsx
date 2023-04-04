@@ -87,6 +87,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
     const handleReturnItem = async (item, callback) => {
         const { displayName, image_url, email } = await getUserById(item.borrowed_by.id);
         navigation.navigate("Rating", { screen: "Rating", params: { ownerid: item.owner, borrowerName: displayName, borrowerid: item.borrowed_by.id, item: item.id } })
+        callback();
     }
 
     useEffect(() => {
@@ -155,7 +156,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                                 () => alert("Item requested succesfully"))
                         }
                         } />)}
-                {item.owner == route.params.userid ? (
+                {(item.owner == route.params.userid && item.borrowed) ? (
                     <BBButton label="Item Returned"
                         onPress={async () => {
                             await handleReturnItem(item, navigation.goBack)
