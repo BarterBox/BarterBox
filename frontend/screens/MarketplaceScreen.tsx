@@ -9,22 +9,39 @@ import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceIte
 import { SearchBar } from '@rneui/themed';
 import { Image } from 'react-native';
 import Background from "../components/general/Background";
+import {Picker} from '@react-native-picker/picker';
+
 
 const MarketplaceScreen = ({ navigation }) => {
     const { user } = useContext(AuthContext);
     const [items, setItems] = useState<Item[]>([]);
     const [searchedItems, setSearchedItems] = useState<Item[]>([]);
     const [search, setSearch] = useState("");
-    const [category, setcategory] = React.useState('home');
+    const [category, setcategory] = React.useState('vehicles');
+
+    const options = [
+        {label: 'Vehicles', value: 'vehicles'},
+        {label: 'Womens clothing & shoes', value: 'womensclothing&shoes'},
+        {label: 'Mens clothing & shoes', value: 'mensclothing&shoes'},
+
+        {label: 'Furniture', value: 'furniture'},
+        {label: 'Electronics', value: 'electronics'},
+        {label: 'Appliances', value: 'appliances'},
+
+        {label: 'Baby', value: 'baby'},
+        {label: 'Books, films & music', value: 'booksfilmmusic'},
+        {label: 'Car', value: 'car'},
+
+        {label: 'Health & beauty', value: 'health&beauty'},
+        {label: 'Toys', value: 'toys'},
+        {label: 'Sporting goods', value: 'sports'},
+      ];
+
 
     const handleChange = (event) => {
-   
-        setcategory(event.target.value);
-        console.log('set category working  '+event.target.value);
-  
-        updatecategory(event.target.value);
-        console.log('category working '+event.target.value);
-      
+        console.log(event);
+        setcategory(event);  
+        updatecategory(event);
       };
   
     const fetchItems = async () => {
@@ -46,7 +63,7 @@ const MarketplaceScreen = ({ navigation }) => {
                 searchedItems.push(items[i]);
             }
         }
-        console.log(searchedItems.length);
+        console.log('searched item length '+searchedItems.length);
         setSearchedItems(searchedItems)
     }
 
@@ -54,17 +71,20 @@ const MarketplaceScreen = ({ navigation }) => {
         searchCategory(category)
 
     };
+
     const searchCategory = (category) => {
         const searchedItems = [];
         for (let i = 0; i < items.length; i++) {
             if (items[i].category === category) {
                 searchedItems.push(items[i]);
+                console.log("hello + ", i);
             }
             
         }
-        console.log(searchedItems.length);
-        setSearchedItems(searchedItems)
 
+        console.log(searchedItems.length);
+        setSearchedItems(searchedItems);
+        console.log('search category working' + searchedItems);
 
     }
 
@@ -83,38 +103,16 @@ const MarketplaceScreen = ({ navigation }) => {
                     onChangeText={updateSearch}
                     value={search}
                 />
+                <Text>Category</Text>
+                <Picker
+                    selectedValue={category}
+                    onValueChange={(itemValue, itemIndex) => handleChange(itemValue)}
+                    style={styles.picker}>
+                    {options.map((option, index) => (
+                    <Picker.Item key={index} value={option.value} label={option.label} />
+                    ))}
+                </Picker>
             </View>
-            <div>
-
-<label>
-
-  Select a category: 
-    <select value={category} onChange={handleChange}>
-
-    <option value="vehicles">Vehicles</option>
-
-    <option value="womensclothing&shoes">Womens clothing & shoes</option>
-
-    <option value="mensclothing&shoes">Mens clothing & shoes</option>
-
-    <option value="furniture">Furniture</option>
-    <option value="electronics">Electronics</option>
-
-    <option value="appliances">Appliances</option>
-    <option value="baby">Baby</option>
-    <option value="booksfilmmusic">Books, films & music</option>
-    <option value="car">Car</option>
-    <option value="health&beauty">Health & beauty</option>
-    <option value="toys">Toys</option>
-    <option value="sports">Sporting goods</option>
-
-
-    </select>
- 
-
-</label>
-
-</div>
 
 
             <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
@@ -146,7 +144,13 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         alignItems: 'flex-start',
         justifyContent: 'space-evenly',
-    }
+    },
+    picker: {
+        width: '80%',
+      },
+      pickerInner: {
+        color: 'blue',
+      },
 });
 
 export default MarketplaceScreen;
