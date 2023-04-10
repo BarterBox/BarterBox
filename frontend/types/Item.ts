@@ -10,6 +10,7 @@ export default class Item {
     heading: string;
     image_url: string;
     owner: string;
+    category: string;
 
     async getOwner(): Promise<User> {
         const user = await getFirestoreDocumentData("Users/" + this.owner);

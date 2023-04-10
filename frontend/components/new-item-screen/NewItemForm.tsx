@@ -68,9 +68,21 @@ const NewItemForm = ({ onSubmit }) => {
     }
 
     const options = [
-        {label: 'Book', value: 'book'},
-        {label: 'Clothing', value: 'clothing'},
-        {label: 'Miscellaneous', value: 'miscellaneous'},
+        {label: 'Vehicles', value: 'vehicles'},
+        {label: 'Womens clothing & shoes', value: 'womensclothing&shoes'},
+        {label: 'Mens clothing & shoes', value: 'mensclothing&shoes'},
+
+        {label: 'Furniture', value: 'furniture'},
+        {label: 'Electronics', value: 'electronics'},
+        {label: 'Appliances', value: 'appliances'},
+
+        {label: 'Baby', value: 'baby'},
+        {label: 'Books, films & music', value: 'booksfilmmusic'},
+        {label: 'Car', value: 'car'},
+
+        {label: 'Health & beauty', value: 'health&beauty'},
+        {label: 'Toys', value: 'toys'},
+        {label: 'Sporting goods', value: 'sports'},
       ];
 
     return (
@@ -97,7 +109,7 @@ const NewItemForm = ({ onSubmit }) => {
                     limit={255}
                     onChangeHandler={text => setItemDescription(text)} />
                 {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-                <BBButton label={'Add Profile Picture'} onPress={handlePickImage}/>
+                <BBButton label={'Add Picture of Item'} onPress={handlePickImage}/>
                 <View style={styles.action}>
                     <Button
                         label='Cancel'
