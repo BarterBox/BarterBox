@@ -91,7 +91,6 @@ const ItemDetailsScreen = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        console.log(item)
         getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
             .catch(err => console.log(err))
     }, [refreshRequest])
@@ -160,7 +159,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                 {(item.owner == route.params.userid && item.borrowed) ? (
                     <BBButton label="Item Returned"
                         onPress={async () => {
-                            await handleReturnItem(item, navigation.goBack)
+                            await handleReturnItem(item, navigation.goBack())
                         }}
                     />
                 ) : (null)}
