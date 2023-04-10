@@ -86,8 +86,14 @@ const ItemDetailsScreen = ({ navigation, route }) => {
     const [refreshRequest, setRefreshRequests] = useState(1)
     const handleReturnItem = async (item, callback) => {
         const { displayName, image_url, email } = await getUserById(item.borrowed_by.id);
-        navigation.navigate("Rating", { screen: "Rating", params: { ownerid: item.owner, borrowerName: displayName, borrowerid: item.borrowed_by.id, item: item.id } })
-        callback();
+        navigation.navigate("RatingLender", { screen: "RatingLender", params: { ownerid: item.owner, borrowerName: displayName, borrowerid: item.borrowed_by.id, item: item.id } })
+        callback;
+    }
+
+    const handleItemReturn = async (item, callback) => {
+        const {displayName, image_url, email} = await getUserById(item.owner);
+        navigation.navigate("RatingBorrower", { screen: "RatingBorrower", params: { ownerId: item.owner, ownerName: displayName, item: item.item } });
+        callback;
     }
 
     useEffect(() => {
@@ -156,14 +162,20 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                                 () => alert("Item requested succesfully"))
                         }
                         } />)}
-                {(item.owner == route.params.userid && item.borrowed) ? (
+                {(item.owner == route.params.userid && item.borrowed && item.return_ready) ? (
                     <BBButton label="Item Returned"
                         onPress={async () => {
                             await handleReturnItem(item, navigation.goBack())
                         }}
                     />
                 ) : (null)}
-
+                {(item.borrowed_by.id === route.params.userid && item.borrowed) ? (
+                    <BBButton label="Return Item"
+                        onPress={async () => {
+                            await handleItemReturn(item, navigation.goBack())
+                        }}
+                    />
+                ) : (null)}
                 {item.owner == route.params.userid && !item.borrowed && recentRequest != null ?
                     (<>
                         <View>

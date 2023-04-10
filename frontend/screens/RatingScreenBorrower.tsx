@@ -4,19 +4,18 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, SafeAreaView} from 're
 import BBButton from '../components/general/BBButton';
 import {db} from '../Firebase';
 
-const RatingScreen = ({navigation, route}) => {
+const RatingScreenBorrower = ({navigation, route}) => {
     const [defaultRating, setDefaultRating] = useState(2);
     const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
     const [userData, setUserData] = useState(null)
     const [itemData, setItemData] = useState(null)
-    const borrowerName = route.params.params.borrowerName
-    const borrowerId = route.params.params.borrowerid
-    const ownerId = route.params.params.ownerid
+    const ownerName = route.params.params.ownerName
+    const ownerId = route.params.params.ownerId
     const item = route.params.params.item
 
     const preUpdate = () => {
         try {
-            getDoc(doc(db, "Users", borrowerId))
+            getDoc(doc(db, "Users", ownerId))
                 .then(snapshot => {
                     if (snapshot.exists) {
                         const data = snapshot.data();
@@ -31,7 +30,7 @@ const RatingScreen = ({navigation, route}) => {
                             rating_total: data.rating_total
                         })
                     }
-                });
+                })
             getDoc(doc(db, "items", item))
                 .then(snapshot => {
                     if(snapshot.exists) {
@@ -45,7 +44,8 @@ const RatingScreen = ({navigation, route}) => {
                             description: data.description,
                             heading: data.heading,
                             image_url: data.image_url,
-                            owner: data.owner
+                            owner: data.owner,
+                            return_ready: data.return_ready
                         })
                     }
                 })
@@ -58,7 +58,7 @@ const RatingScreen = ({navigation, route}) => {
         const count = userData.rating_count + 1
         const total = userData.rating_total + rating
         const new_rating = total/count
-        await setDoc(doc(db, "Users", borrowerId), {
+        await setDoc(doc(db, "Users", ownerId), {
             displayName: userData.displayName,
             country: userData.country,
             city: userData.city,
@@ -68,14 +68,15 @@ const RatingScreen = ({navigation, route}) => {
             rating_total: total 
         })
         await setDoc(doc(db, "items", item), {
-            borrowed: false,
-            borrowed_by: "",
+            borrowed: itemData.borrowed,
+            borrowed_by: itemData.borrowed_by,
             category: itemData.category,
             date_uploaded: itemData.date_uploaded,
             description: itemData.description,
             heading: itemData.heading,
             image_url: itemData.image_url,
-            owner: itemData.owner
+            owner: itemData.owner,
+            return_ready: true
         })
     }
 
@@ -114,7 +115,7 @@ const RatingScreen = ({navigation, route}) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
             <Text style={styles.textStyle}>
-                How was your experience with {borrowerName}
+                How was your experience with {ownerName}
             </Text>
             <Text style={styles.textStyleSmall}>
                 Please Rate The Interaction
@@ -184,4 +185,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RatingScreen
+export default RatingScreenBorrower

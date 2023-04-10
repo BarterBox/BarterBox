@@ -32,8 +32,8 @@ const MyItemsScreen = ({ navigation }) => {
 		const ownItemSelection = query(collection(database, "items"), where("owner", "==", user.uid));
 		unsubItems = onSnapshot(ownItemSelection, (snapshot) => {
 			setUserOwnItems(snapshot.docs.map((doc, index) => {
-				const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner } = doc.data();
-				const item = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, id: doc.id };
+				const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready } = doc.data();
+				const item = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready, id: doc.id };
 				return { id: `${index}`, item: item };
 			}))
 		})
@@ -46,8 +46,8 @@ const MyItemsScreen = ({ navigation }) => {
 						return getDoc(doc(database, "items", item))
 							.then((itemSnapshot) => { return itemSnapshot.data() })
 							.then((itemAttributes) => {
-								const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner } = itemAttributes;
-								const itemType = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner };
+								const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready } = itemAttributes;
+								const itemType = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready, item };
 								return { id: `${index}`, item: itemType };
 							})
 					})

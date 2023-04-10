@@ -3,7 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MyItemsScreen from '../screens/MyItemsScreen';
 import NewItemScreen from '../screens/NewItemScreen';
 import ItemDetailsScreen from '../screens/ItemDetailsScreen';
-import RatingScreen from '../screens/RatingScreen';
+import RatingScreenLender from '../screens/RatingScreenLender';
+import RatingScreenBorrower from '../screens/RatingScreenBorrower';
 
 export default function MyItemsStack() {
     const Stack = createStackNavigator();
@@ -29,8 +30,12 @@ export default function MyItemsStack() {
                 component={ItemDetailsScreen}
             />
             <Stack.Screen
-                name='Rating'
-                component={RatingScreen}
+                name='RatingLender'
+                component={RatingScreenLender}
+            />
+            <Stack.Screen
+                name='RatingBorrower'
+                component={RatingScreenBorrower}
             />
         </Stack.Navigator>
     );
