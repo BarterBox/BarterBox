@@ -26,7 +26,9 @@ const RatingScreen = ({navigation, route}) => {
                             country: data.country,
                             city: data.city,
                             image_url: data.image_url,
-                            rating: data.userRating
+                            rating: data.rating,
+                            rating_count: data.rating_count,
+                            rating_total: data.rating_total
                         })
                     }
                 });
@@ -53,12 +55,17 @@ const RatingScreen = ({navigation, route}) => {
     }
 
     const updateUserRating = async (rating) => {
+        const count = userData.rating_count + 1
+        const total = userData.rating_total + rating
+        const new_rating = total/count
         await setDoc(doc(db, "Users", borrowerId), {
             displayName: userData.displayName,
             country: userData.country,
             city: userData.city,
             image_url: userData.image_url,
-            rating: rating
+            rating: new_rating,
+            rating_count: count,
+            rating_total: total 
         })
         await setDoc(doc(db, "items", item), {
             borrowed: false,

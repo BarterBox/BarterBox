@@ -91,6 +91,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
     }
 
     useEffect(() => {
+        console.log(item)
         getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
             .catch(err => console.log(err))
     }, [refreshRequest])
