@@ -38,20 +38,15 @@ const MyItemsScreen = ({ navigation }) => {
 			}))
 		})
 
-		const loanSelection = query(collection(database, "loans"), where("borrower", "==", user.uid));
+		const loanSelection = query(collection(database, "items"), where("borrowed_by.id", "==", user.uid));
 		unsubLoans = onSnapshot(loanSelection, (snapshot) => {
-			Promise.all(
-				snapshot.docs.map((doc) => { return doc.data().item })
-					.map((item, index) => {
-						return getDoc(doc(database, "items", item))
-							.then((itemSnapshot) => { return itemSnapshot.data() })
-							.then((itemAttributes) => {
-								const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready } = itemAttributes;
-								const itemType = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready, item };
-								return { id: `${index}`, item: itemType };
-							})
-					})
-			).then((loanItems) => { setUserLoanItems(loanItems) });
+			setUserLoanItems(
+				snapshot.docs.map((item, index) => {
+					const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready } = item.data();
+					const itemType = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready, item };
+					return { id: `${index}`, item: itemType };
+				})
+			)
 		})
 
 		return () => { unsubItems(); unsubLoans(); }
