@@ -65,7 +65,8 @@ const MessagingScreen = ({ navigation, route }) => {
                     //unix millis to have really low chance of two documents writing with the same id (lazy solution)
                     setDoc(doc(database, `chats/${route.params.chat.id}/messages`, `${Date.now()}`), {
                         content: input,
-                        sender: route.params.userid
+                        sender: route.params.userid,
+                        unread: true
                     })
                     setInput("");
                 }}></Button>
