@@ -154,14 +154,16 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                         onPress={async () => 
                             await handleDeleteItem(item, navigation.goBack)
                         } />)
-                    :
+                    : (null)}
+                {(item.owner != route.params.userid && !item.borrowed) ?
                     (<BBButton label="Request"
                         onPress={async () => {
                             await handleRequestItem(item,
                                 route.params.userid,
                                 () => alert("Item requested succesfully"))
                         }
-                        } />)}
+                        } />
+                    ) : (null) }
                 {(item.owner == route.params.userid && item.borrowed && item.return_ready) ? (
                     <BBButton label="Item Returned"
                         onPress={async () => {
