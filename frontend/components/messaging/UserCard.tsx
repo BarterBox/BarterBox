@@ -20,11 +20,11 @@ export default function UserCard({
                 {backButton && <TouchableOpacity onPress={()=>{onBack();navigate.goBack()}} style={styles.backButton}><Text>{"<"}</Text></TouchableOpacity>}
                 <Image style={styles.image} source={{uri: user.photoURL}}/>
                 <Text style={styles.name}>{user.displayName}</Text>
-                {unreadCount && unreadCount > 0 && (
+                {unreadCount && unreadCount > 0 ? (
                     <View style={styles.badge}>
-                        <Text style={styles.badgeText}>{unreadCount}</Text>
+                    <Text style={styles.badgeText}>{unreadCount}</Text>
                     </View>
-                )}
+                ) : null}
             </View>
             {
                 lastMessage && <Text style={styles.lastMessage}>{lastMessage}</Text>
