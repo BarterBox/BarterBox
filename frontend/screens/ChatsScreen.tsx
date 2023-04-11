@@ -5,6 +5,8 @@ import Heading1 from "../components/Heading1";
 import { AuthContext } from '../navigation/AuthProvider';
 import { app, getUserById } from '../Firebase';
 import { getFirestore, getDoc, getDocs, doc, query, collection, where, onSnapshot, writeBatch } from "firebase/firestore";
+import { useFocusEffect } from '@react-navigation/native';
+
 
 import UserCard from "../components/messaging/UserCard";
 
@@ -30,18 +32,10 @@ const ChatsScreen = ({ navigation }) => {
         }
     )
 
-    useEffect(() => {
-        (async () => {
-            //get data for the current user
-            getUserById(user.uid)
-                .then((correspondantData) => {
-                    const { displayName, image_url = null, email } = correspondantData;
-                    setUserData({ displayName: displayName, photoURL: image_url, email: email });
-                })
-
-        })();
-
-        //problem - map function returns an array of promises, app crashes if setChats takes promises
+    useFocusEffect(
+    React.useCallback(() => {
+      // Update the `unsub` variable when the screen is focused
+      //problem - map function returns an array of promises, app crashes if setChats takes promises
         //solution: setChats with promise.all so that setChats happens after all promises are resolved
         unsub = onSnapshot(query(collection(database, "chats")), (snapshot) => {
             Promise.all(snapshot.docs.filter((document, index) => {
@@ -60,6 +54,26 @@ const ChatsScreen = ({ navigation }) => {
                     return { id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email }, unreadCount: unreadCount };
                 })).then((chats) => { setChats(chats) });
         });
+
+      // Clean up the `unsub` variable when the screen is unfocused
+      return () => unsub();
+    }, [])
+  );
+
+    useEffect(() => {
+        (async () => {
+            //get data for the current user
+            getUserById(user.uid)
+                .then((correspondantData) => {
+                    const { displayName, image_url = null, email } = correspondantData;
+                    setUserData({ displayName: displayName, photoURL: image_url, email: email });
+                })
+
+        })();
+
+        
+
+        
     }, []);
 
     const handleChatPress = async (item) => {
