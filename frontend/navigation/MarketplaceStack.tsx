@@ -17,8 +17,7 @@ export default function MarketplaceStack() {
                 component={MarketplaceScreen}
             />
             <Stack.Screen
-                name='ItemDetails'
-                
+                name='ItemDetails'   
                 component={ItemDetailsScreen}
             />
         </Stack.Navigator>

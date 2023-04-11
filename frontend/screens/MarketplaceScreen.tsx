@@ -31,7 +31,6 @@ const MarketplaceScreen = ({ navigation }) => {
 
         {label: 'Baby', value: 'baby'},
         {label: 'Books, films & music', value: 'booksfilmmusic'},
-        {label: 'Car', value: 'car'},
 
         {label: 'Health & beauty', value: 'health&beauty'},
         {label: 'Toys', value: 'toys'},

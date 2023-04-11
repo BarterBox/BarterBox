@@ -146,7 +146,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
 
                     //navigate to the new chat created (or existing)
                     const { displayName, image_url, email } = await getUserById(item.owner);
-                    navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
+                    navigation.navigate("MessagingScreen", { screen: "MessagingScreen", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
                 }}></BBButton>}
 
                 {item.owner == route.params.userid ?
