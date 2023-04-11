@@ -4,11 +4,12 @@ import {useNavigation} from "@react-navigation/native";
 
 export default function UserCard({
                                      user,
-                                     lastMessage,
-                                     onPress,
-                                     backButton,
-                                        onBack,
-                                 }: { onBack?:()=>void, user: User, onPress: () => void, lastMessage?: string, backButton?: boolean }) {
+    onPress,
+    lastMessage,
+    backButton,
+    onBack,
+    unreadCount,
+}: { onBack?:()=>void, user: User, onPress: () => void, lastMessage?: string, backButton?: boolean, unreadCount?: number }) {
     if (!(user.photoURL)) {
         user.photoURL = "https://firebasestorage.googleapis.com/v0/b/barter-box-a2d9f.appspot.com/o/images%2Fquestionmark.png?alt=media&token=ea7e9ace-47e2-461f-9c33-3e4d23f57ec9";
     }
@@ -19,6 +20,11 @@ export default function UserCard({
                 {backButton && <TouchableOpacity onPress={()=>{onBack();navigate.goBack()}} style={styles.backButton}><Text>{"<"}</Text></TouchableOpacity>}
                 <Image style={styles.image} source={{uri: user.photoURL}}/>
                 <Text style={styles.name}>{user.displayName}</Text>
+                {unreadCount && unreadCount > 0 && (
+                    <View style={styles.badge}>
+                        <Text style={styles.badgeText}>{unreadCount}</Text>
+                    </View>
+                )}
             </View>
             {
                 lastMessage && <Text style={styles.lastMessage}>{lastMessage}</Text>
@@ -62,5 +68,18 @@ const styles = StyleSheet.create({
         backgroundColor: "#aaa",
         borderRadius: 5,
         padding: 5,
+    },
+    badge: {
+        backgroundColor: 'red',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 5,
+    },
+    badgeText: {
+        color: 'white',
+        fontSize: 12,
     }
 });
