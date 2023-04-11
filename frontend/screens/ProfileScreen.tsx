@@ -18,7 +18,12 @@ const ProfileScreen = ({navigation}) => {
     const [country, setCountry] = useState('');
     const [city, setCity] = useState('');
     const [imageUrl, setImageUrl] = useState(null);
+    const [userRating, setUserRating] = useState('')
+    const [stars, setStars] = useState([1, 2, 3, 4, 5])
 
+    const intUserRating = Number.parseInt(userRating, 10)
+    const starImageFilled = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_filled.png';
+    const starImageUnfilled = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_corner.png';
 
     useEffect(() => {
         getDoc(doc(db, "Users", user.uid))
@@ -29,6 +34,7 @@ const ProfileScreen = ({navigation}) => {
                     setCountry(data.country);
                     setCity(data.city);
                     setImageUrl(data.image_url);
+                    setUserRating(data.rating);
                     console.log(imageUrl);
                     console.log(data);
                 } else {
@@ -64,9 +70,20 @@ const ProfileScreen = ({navigation}) => {
                     }}/>
                 </View>
                 <View style={styles.userInfoWrapper}>
-                    <View style={styles.userInfoItem}>
-                        <Text style={styles.userInfoTitle}>5 stars</Text>
-                        <Text style={styles.userInfoSubTitle}>Rating</Text>
+                    <View style={styles.customRatingBarStyle}>
+                        {stars.map((item, key) => {
+                            return (
+                                <Image
+                                    key={item}
+                                    style={styles.starImageStyle}
+                                    source={
+                                    item <= intUserRating
+                                        ? {uri: starImageFilled}
+                                        : {uri: starImageUnfilled}
+                                    }
+                                />
+                            );
+                        })}
                     </View>
                 </View>
                 <View style={styles.userInfoWrapper}>
@@ -133,6 +150,16 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#666',
         textAlign: 'center',
+    },
+    starImageStyle: {
+        width: 40,
+        height: 40,
+        resizeMode: 'cover',
+    },
+    customRatingBarStyle: {
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginTop: 30,
     },
 });
 

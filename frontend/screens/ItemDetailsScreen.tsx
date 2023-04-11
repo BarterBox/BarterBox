@@ -84,6 +84,18 @@ const ItemDetailsScreen = ({ navigation, route }) => {
     const {user} = useContext(AuthContext)
     const [recentRequest, setRecentRequest] = useState(null);
     const [refreshRequest, setRefreshRequests] = useState(1)
+    const handleReturnItem = async (item, callback) => {
+        const { displayName, image_url, email } = await getUserById(item.borrowed_by.id);
+        navigation.navigate("RatingLender", { screen: "RatingLender", params: { ownerid: item.owner, borrowerName: displayName, borrowerid: item.borrowed_by.id, item: item.id } })
+        callback;
+    }
+
+    const handleItemReturn = async (item, callback) => {
+        const {displayName, image_url, email} = await getUserById(item.owner);
+        navigation.navigate("RatingBorrower", { screen: "RatingBorrower", params: { ownerId: item.owner, ownerName: displayName, item: item.item } });
+        callback;
+    }
+
     useEffect(() => {
         getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
             .catch(err => console.log(err))
@@ -134,19 +146,38 @@ const ItemDetailsScreen = ({ navigation, route }) => {
 
                     //navigate to the new chat created (or existing)
                     const { displayName, image_url, email } = await getUserById(item.owner);
-                    navigation.navigate("Messaging", { screen: "Messaging", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
+                    navigation.navigate("MessagingScreen", { screen: "MessagingScreen", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
                 }}></BBButton>}
 
                 {item.owner == route.params.userid ?
-                    (<BBButton label="Delete" onPress={async () => await handleDeleteItem(item, navigation.goBack)} />) :
+                    (<BBButton label="Delete" 
+                        onPress={async () => 
+                            await handleDeleteItem(item, navigation.goBack)
+                        } />)
+                    : (null)}
+                {(item.owner != route.params.userid && !item.borrowed) ?
                     (<BBButton label="Request"
                         onPress={async () => {
                             await handleRequestItem(item,
                                 route.params.userid,
                                 () => alert("Item requested succesfully"))
                         }
-                        } />)}
-
+                        } />
+                    ) : (null) }
+                {(item.owner == route.params.userid && item.borrowed && item.return_ready) ? (
+                    <BBButton label="Item Returned"
+                        onPress={async () => {
+                            await handleReturnItem(item, navigation.goBack())
+                        }}
+                    />
+                ) : (null)}
+                {(item.borrowed_by.id === route.params.userid && item.borrowed) ? (
+                    <BBButton label="Return Item"
+                        onPress={async () => {
+                            await handleItemReturn(item, navigation.goBack())
+                        }}
+                    />
+                ) : (null)}
                 {item.owner == route.params.userid && !item.borrowed && recentRequest != null ?
                     (<>
                         <View>

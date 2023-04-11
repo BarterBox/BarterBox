@@ -17,9 +17,10 @@ const MarketplaceScreen = ({ navigation }) => {
     const [items, setItems] = useState<Item[]>([]);
     const [searchedItems, setSearchedItems] = useState<Item[]>([]);
     const [search, setSearch] = useState("");
-    const [category, setcategory] = React.useState('vehicles');
+    const [category, setcategory] = React.useState('all');
 
     const options = [
+        {label: 'All', value: 'all'},
         {label: 'Vehicles', value: 'vehicles'},
         {label: 'Womens clothing & shoes', value: 'womensclothing&shoes'},
         {label: 'Mens clothing & shoes', value: 'mensclothing&shoes'},
@@ -30,7 +31,6 @@ const MarketplaceScreen = ({ navigation }) => {
 
         {label: 'Baby', value: 'baby'},
         {label: 'Books, films & music', value: 'booksfilmmusic'},
-        {label: 'Car', value: 'car'},
 
         {label: 'Health & beauty', value: 'health&beauty'},
         {label: 'Toys', value: 'toys'},
@@ -45,7 +45,6 @@ const MarketplaceScreen = ({ navigation }) => {
       };
   
     const fetchItems = async () => {
-        // const items = await getFirestoreCollectionDataWhere("items", "owner", "!=", user.uid);
         const userCity = await getUserById(user.uid).then((user) => user.city);
         const items = await getItemsByCity(userCity, user.uid);
         setItems(items as Item[]);
@@ -69,7 +68,6 @@ const MarketplaceScreen = ({ navigation }) => {
 
     const updatecategory = (category) => {
         searchCategory(category)
-
     };
 
     const searchCategory = (category) => {
@@ -85,7 +83,6 @@ const MarketplaceScreen = ({ navigation }) => {
         console.log(searchedItems.length);
         setSearchedItems(searchedItems);
         console.log('search category working' + searchedItems);
-
     }
 
 
@@ -119,9 +116,12 @@ const MarketplaceScreen = ({ navigation }) => {
                 {
                     searchedItems.length > 0 ? searchedItems.map((item, index) => {
                         return <MarketplaceItemCard key={index} item={item} onPress={() => navigation.navigate('ItemDetails', {item:item})}/>
-                    }) : items.map((item, index) => {
+                    }) : (null)
+                } 
+                {
+                    (searchedItems.length == 0 && category === 'all') ? items.map((item, index) => {
                         return <MarketplaceItemCard key={index} onPress={() => navigation.navigate('ItemDetails', { item: item, userid: user.uid })} item={item} />
-                    })
+                    }) : (null)
                 }
             </ScrollView>
         </View>

@@ -32,8 +32,8 @@ const MyItemsScreen = ({ navigation }) => {
 		const ownItemSelection = query(collection(database, "items"), where("owner", "==", user.uid));
 		unsubItems = onSnapshot(ownItemSelection, (snapshot) => {
 			setUserOwnItems(snapshot.docs.map((doc, index) => {
-				const { date_uploaded, description, heading, image_url, owner } = doc.data();
-				const item = { date_uploaded, description, heading, image_url, owner, id: doc.id };
+				const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready } = doc.data();
+				const item = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready, id: doc.id };
 				return { id: `${index}`, item: item };
 			}))
 		})
@@ -46,8 +46,8 @@ const MyItemsScreen = ({ navigation }) => {
 						return getDoc(doc(database, "items", item))
 							.then((itemSnapshot) => { return itemSnapshot.data() })
 							.then((itemAttributes) => {
-								const { date_uploaded, description, heading, image_url, owner } = itemAttributes;
-								const itemType = { date_uploaded, description, heading, image_url, owner };
+								const { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready } = itemAttributes;
+								const itemType = { borrowed, borrowed_by, category, date_uploaded, description, heading, image_url, owner, return_ready, item };
 								return { id: `${index}`, item: itemType };
 							})
 					})
@@ -63,7 +63,7 @@ const MyItemsScreen = ({ navigation }) => {
 	}
 	const Footer = <View style={{ height: 5 }}></View >
 	const KeyExtractFunction = item => item.id;
-	const RenderFunction = ({ item }) => <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', { item: item, userid: user.uid })} item={item.item} />
+	const RenderFunction = ({ item }) => <MarketplaceItemCard onPress={() => navigation.navigate('ItemDetails', { item: item, userid: user.uid })} item={item.item}  />
 
 	return (
 		<View style={styles.container}>

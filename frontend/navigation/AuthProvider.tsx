@@ -51,7 +51,8 @@ export const AuthProvider = ({ children }) => {
             displayName: userData.displayName,
             country: userData.country,
             city: userData.city,
-            image_url: userData.image_url
+            image_url: userData.image_url,
+            rating: userData.rating
           })
         },
         logout: async () => {
