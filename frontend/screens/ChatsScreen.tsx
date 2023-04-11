@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import Heading1 from "../components/Heading1";
 import { AuthContext } from '../navigation/AuthProvider';
 import { app, getUserById } from '../Firebase';
-import { getFirestore, getDoc, getDocs, doc, query, collection, where, onSnapshot } from "firebase/firestore";
+import { getFirestore, getDoc, getDocs, doc, query, collection, where, onSnapshot, writeBatch } from "firebase/firestore";
 
 import UserCard from "../components/messaging/UserCard";
 
@@ -48,17 +48,34 @@ const ChatsScreen = ({ navigation }) => {
                 const data = document.data();
                 return data.user1 == user.uid || data.user2 == user.uid;
             })
-                .map((document, index, array) => {
+                .map(async (document, index, array) => {
                     const data = document.data();
                     const correspondantRole = data.user1 == user.uid ? "user2" : "user1";
-                    return getUserById(document.data()[`${correspondantRole}`])
-                        .then((correspondantData) => {
-                            const { displayName, image_url = null, email } = correspondantData;
-                            return { id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email } };
-                        })
+                    const correspondantData = await getUserById(document.data()[`${correspondantRole}`]);
+                    const { displayName, image_url = null, email } = correspondantData;
+
+                    const messagesSnapshot = await getDocs(query(collection(database, `chats/${document.id}/messages`), where("unread", "==", true), where("sender", "!=", user.uid)));
+                    const unreadCount = messagesSnapshot.size;
+
+                    return { id: document.id, correspondant: { displayName: displayName, photoURL: image_url, email: email }, unreadCount: unreadCount };
                 })).then((chats) => { setChats(chats) });
         });
     }, []);
+
+    const handleChatPress = async (item) => {
+        unsub();
+        const messagesRef = collection(database, `chats/${item.id}/messages`);
+        const unreadMessagesSnapshot = await getDocs(query(messagesRef, where("unread", "==", true), where("sender", "!=", user.uid)));
+        const batch = writeBatch(database);
+
+        unreadMessagesSnapshot.forEach(docSnapshot => {
+            const messageRef = doc(messagesRef, docSnapshot.id);
+            batch.update(messageRef, { "unread": false });
+        });
+
+        await batch.commit();
+        navigation.navigate("Messaging", { chat: item, userid: user.uid });
+    }
 
     return (
         <View style={styles.container}>
@@ -67,7 +84,15 @@ const ChatsScreen = ({ navigation }) => {
             </View>
             <FlatList
                 data={chats}
-                renderItem={({ item }) => { return <UserCard user={item.correspondant} onPress={() => { unsub(); navigation.navigate("Messaging", { chat: item, userid: user.uid }) }} /> }}
+                renderItem={({ item }) => (
+  <UserCard
+    user={item.correspondant}
+    onPress={() => {
+      handleChatPress(item);
+    }}
+    unreadCount={item.unreadCount}
+  />
+)}
                 ItemSeparatorComponent={({ }) => {
                     return <View style={{ height: 5 }}></View>;
                 }}
