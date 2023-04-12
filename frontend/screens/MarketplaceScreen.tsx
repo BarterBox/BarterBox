@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View} from 'react-native-ui-lib';
-import {StyleSheet, ScrollView, Button, Text} from 'react-native';
+import {StyleSheet, ScrollView, Button, Text, Platform, ActionSheetIOS} from 'react-native';
 import {AuthContext} from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
@@ -104,14 +104,30 @@ const MarketplaceScreen = ({navigation}) => {
                         />
                     </View>
                     <View style={styles.picker}>
-                        <Picker
-                            selectedValue={category}
-                            onValueChange={(itemValue, itemIndex) => handleChange(itemValue)}
-                            style={styles.pickerInner}>
-                            {options.map((option, index) => (
-                                <Picker.Item key={index} value={option.value} label={option.label}/>
-                            ))}
-                        </Picker>
+                        {
+                            Platform.OS === "ios" ? (
+                                <Text onPress={
+                                    () => {
+                                        ActionSheetIOS.showActionSheetWithOptions({
+                                                options: options.map((option) => option.label),
+                                                cancelButtonIndex: 0,
+                                            }, (buttonIndex) => {
+                                                handleChange(options[buttonIndex].value)
+                                            }
+                                        )
+                                    }
+                                } style={styles.pickerInner}>{options.find((option) => option.value === category).label}</Text>
+                            ) : (
+                                <Picker
+                                    selectedValue={category}
+                                    onValueChange={(itemValue, itemIndex) => handleChange(itemValue)}
+                                    style={styles.pickerInner}>
+                                    {options.map((option, index) => (
+                                        <Picker.Item key={index} value={option.value} label={option.label}/>
+                                    ))}
+                                </Picker>
+                            )
+                        }
                     </View>
                 </View>
             </View>
@@ -169,6 +185,9 @@ const styles = StyleSheet.create({
         color: '#86939e',
         height: 50,
         width: "90%",
+        fontSize: 20,
+        textAlign: 'center',
+        textAlignVertical: 'center',
     },
     searchbar: {
         width: '65%',
