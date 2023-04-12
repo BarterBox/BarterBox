@@ -9,12 +9,15 @@ import {useFocusEffect} from '@react-navigation/native';
 
 
 import UserCard from "../components/messaging/UserCard";
+import {ChatRedirectContext} from "../context/Context";
 
 const database = getFirestore(app);
 
 let unsub;
 
-const ChatsScreen = ({navigation}) => {
+const ChatsScreen = ({navigation, route}) => {
+
+    const {chatRedirect, setChatRedirect} = useContext(ChatRedirectContext);
 
     const [userData, setUserData] = useState({
         displayName: "User", photoURL: null, email: null
@@ -67,6 +70,13 @@ const ChatsScreen = ({navigation}) => {
     );
 
     useEffect(() => {
+        console.log("chatRedirect", chatRedirect);
+        if(chatRedirect?.chat && chatRedirect?.userid){
+            console.log("chatRedirect.chat", chatRedirect.chat);
+            setChatRedirect(null);
+            navigation.navigate("Messaging", chatRedirect);
+        }
+
         (async () => {
             //get data for the current user
             getUserById(user.uid)
@@ -78,7 +88,7 @@ const ChatsScreen = ({navigation}) => {
         })();
 
 
-    }, []);
+    }, [chatRedirect]);
 
     const handleChatPress = async (item) => {
         unsub();

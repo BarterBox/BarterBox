@@ -2,6 +2,8 @@ export type MainContextType = {
     userProfile: any;
     handleLogin: (email: string, password: string) => void;
     handleGoogleLogin: () => void;
+    chatRedirect: any;
+    setChatRedirect: (chatRedirect: any) => void;
 };
 
 export type AuthContextType = {
