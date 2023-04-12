@@ -37,37 +37,21 @@ const MessagingScreen = ({ navigation, route }) => {
         }
     )
 
-    const Spacer = <View style={{ height: 5 }}></View>;
-    const getusebyname = async() =>{
-       const users = await getUsersByName(route.params.chat.correspondant);
-       return users;
-    } 
-    
-    const findUserId = (search) => {
-        setItems(users as User[]);
-        console.log('user'+ User)
-        for (let i = 0; i < users.length; i++) {
-            console.log("users[i].displayName" +users[i].displayName)
-            console.log("route.params.chat.correspondant"+ search)
-            if (users[i].displayName === search) {
-                return user[i].userid;
-            }
-        }
-    }
-
 
     useEffect(() => {
-        getDoc(doc(database, "Users", getusebyname()[0]))
-        .then(snapshot => {
-            if (snapshot.exists) {
-                const data = snapshot.data();
-                setUserRating(data.rating);
-                setName(data.displayName);
-                console.log('rating data'+data);
-            } else {
-                console.log("No such document!");
-            }
-        })
+        const correspId = route.params.chat.correspondant.id;
+        console.log('correspId'+correspId)
+        getDoc(doc(database, "Users", correspId))
+            .then(snapshot => {
+                if (snapshot && snapshot.exists()) {
+                    const data = snapshot.data();
+                    setUserRating(data.rating);
+                    setName(data.displayName);
+                    console.log('rating data'+data);
+                } else {
+                    console.log("No such document!");
+                }
+            })
 
         if(scrollViewRef.current) scrollViewRef.current.scrollToEnd({ animated: true });
         unsub = onSnapshot(query(collection(database, `chats/${route.params.chat.id}/messages`)), (snapshot) => {
@@ -86,19 +70,19 @@ const MessagingScreen = ({ navigation, route }) => {
                 <UserCard backButton user={route.params.chat.correspondant} onBack={unsub} onPress={() => {
                 }}></UserCard>
                 <View style={styles.customRatingBarStyle}>
-                        {stars.map((item, key) => {
-                            return (
-                                <Image
-                                    key={item}
-                                    style={styles.starImageStyle}
-                                    source={
+                    {stars.map((item, key) => {
+                        return (
+                            <Image
+                                key={item}
+                                style={styles.starImageStyle}
+                                source={
                                     item <= intUserRating
                                         ? {uri: starImageFilled}
                                         : {uri: starImageUnfilled}
-                                    }
-                                />
-                            );
-                        })}
+                                }
+                            />
+                        );
+                    })}
                 </View>
 
             </View>
