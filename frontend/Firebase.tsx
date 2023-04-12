@@ -64,7 +64,7 @@ export async function getUsersByName(displayName: string) {
 
 export async function getItemsByCity(city: string, excludeUserId: string) {
   const userIDs = await getUsersFromCity(city, excludeUserId);
-  const itemsSnapshot = await getDocs(query(collection(db, 'items'), where('owner', 'in', userIDs)));
+  const itemsSnapshot = await getDocs(query(collection(db, 'items'), where('owner', 'in', userIDs), where('borrowed', '==', false)));
   const items = itemsSnapshot.docs.map(doc => {
 	let item = doc.data()
 	// Add the id to the item.
