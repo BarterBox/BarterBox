@@ -37,6 +37,10 @@ const MessagingScreen = ({ navigation, route }) => {
         }
     )
 
+    const scrollDown = () => {
+        if(scrollViewRef.current)
+            scrollViewRef.current.scrollToEnd({ animated: false });
+    };
 
     useEffect(() => {
         const correspId = route.params.chat.correspondant.id;
@@ -53,7 +57,6 @@ const MessagingScreen = ({ navigation, route }) => {
                 }
             })
 
-        if(scrollViewRef.current) scrollViewRef.current.scrollToEnd({ animated: true });
         unsub = onSnapshot(query(collection(database, `chats/${route.params.chat.id}/messages`)), (snapshot) => {
             Promise.all(snapshot.docs.filter((document, index) => {
                 return document.data() && true;
@@ -62,9 +65,11 @@ const MessagingScreen = ({ navigation, route }) => {
                     return { id: index, message: document.data() };
                 })).then((messages) => { setMessages(messages) });
         });
-    }, []);
+    }, [scrollViewRef]);
     return (
-        <KeyboardAvoidingView behavior="position" style={styles.container}>
+        <KeyboardAvoidingView behavior="position" style={styles.container}
+                                keyboardVerticalOffset={-1000}
+        >
             <Background/>
             <View style={styles.header}>
                 <UserCard backButton user={route.params.chat.correspondant} onBack={unsub} onPress={() => {
@@ -86,7 +91,7 @@ const MessagingScreen = ({ navigation, route }) => {
                 </View>
 
             </View>
-            <ScrollView style={styles.chatContainer} ref={scrollViewRef}>
+            <ScrollView style={styles.chatContainer} onContentSizeChange={scrollDown} ref={scrollViewRef}>
                 {
                     messages.map((message, index) => {
                         if (message.message.sender == route.params.userid) {
@@ -128,8 +133,9 @@ const styles = StyleSheet.create({
     },
     chatContainer: {
         zIndex: 0,
-        paddingTop: 100,
-        marginBottom: 100,
+        position: "relative",
+        marginTop: 80,
+        marginBottom: 80,
     },
     header: {
         position: "absolute",

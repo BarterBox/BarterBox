@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { FlatList, StyleSheet, Text, View, Button } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-ui-lib';
 import Heading1 from '../components/Heading1';
 import { AuthContext } from '../navigation/AuthProvider';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, onSnapshot } from "firebase/firestore";

@@ -1,19 +1,19 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View} from 'react-native-ui-lib';
-import { StyleSheet, ScrollView, Button, Text } from 'react-native';
-import { AuthContext } from '../navigation/AuthProvider';
+import {StyleSheet, ScrollView, Button, Text, Platform, ActionSheetIOS} from 'react-native';
+import {AuthContext} from '../navigation/AuthProvider';
 import Heading1 from "../components/Heading1";
 import Item from "../types/Item";
-import { getFirestoreCollectionDataWhere, getUserById, getItemsByCity} from "../Firebase";
+import {getUserById, getItemsByCity} from "../Firebase";
 import MarketplaceItemCard from "../components/marketplace-screen/MarketplaceItemCard";
-import { SearchBar } from '@rneui/themed';
-import { Image } from 'react-native';
+import {SearchBar} from '@rneui/themed';
+import {Image} from 'react-native';
 import Background from "../components/general/Background";
 import {Picker} from '@react-native-picker/picker';
 
 
-const MarketplaceScreen = ({ navigation }) => {
-    const { user } = useContext(AuthContext);
+const MarketplaceScreen = ({navigation}) => {
+    const {user} = useContext(AuthContext);
     const [items, setItems] = useState<Item[]>([]);
     const [searchedItems, setSearchedItems] = useState<Item[]>([]);
     const [search, setSearch] = useState("");
@@ -35,14 +35,15 @@ const MarketplaceScreen = ({ navigation }) => {
         {label: 'Health & beauty', value: 'health&beauty'},
         {label: 'Toys', value: 'toys'},
         {label: 'Sporting goods', value: 'sports'},
-      ];
+    ];
 
 
     const handleChange = (event) => {
+        console.log(event);
         setcategory(event);  
         updatecategory(event);
-      };
-  
+    };
+
     const fetchItems = async () => {
         const userCity = await getUserById(user.uid).then((user) => user.city);
         const items = await getItemsByCity(userCity, user.uid);
@@ -53,7 +54,7 @@ const MarketplaceScreen = ({ navigation }) => {
         setSearch(search);
         searchData(search);
     };
-    
+
     const searchData = (search) => {
         const searchedItems = [];
         for (let i = 0; i < items.length; i++) {
@@ -74,7 +75,7 @@ const MarketplaceScreen = ({ navigation }) => {
             if (items[i].category === category) {
                 searchedItems.push(items[i]);
             }
-            
+
         }
         setSearchedItems(searchedItems);
     }
@@ -89,33 +90,59 @@ const MarketplaceScreen = ({ navigation }) => {
             <Background/>
             <View marginB-20>
                 <Heading1 text="BarterBox"/>
-                <SearchBar
-                    placeholder="Seach Marketplace ..."
-                    onChangeText={updateSearch}
-                    value={search}
-                />
-                <Text>Category</Text>
-                <Picker
-                    selectedValue={category}
-                    onValueChange={(itemValue, itemIndex) => handleChange(itemValue)}
-                    style={styles.picker}>
-                    {options.map((option, index) => (
-                    <Picker.Item key={index} value={option.value} label={option.label} />
-                    ))}
-                </Picker>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <View style={styles.searchbar}>
+                        <SearchBar
+                            placeholder="Seach Marketplace ..."
+                            onChangeText={updateSearch}
+                            value={search}
+                        />
+                    </View>
+                    <View style={styles.picker}>
+                        {
+                            Platform.OS === "ios" ? (
+                                <Text onPress={
+                                    () => {
+                                        ActionSheetIOS.showActionSheetWithOptions({
+                                                options: options.map((option) => option.label),
+                                                cancelButtonIndex: 0,
+                                            }, (buttonIndex) => {
+                                                handleChange(options[buttonIndex].value)
+                                            }
+                                        )
+                                    }
+                                } style={styles.pickerInner}>{options.find((option) => option.value === category).label}</Text>
+                            ) : (
+                                <Picker
+                                    selectedValue={category}
+                                    onValueChange={(itemValue, itemIndex) => handleChange(itemValue)}
+                                    style={styles.pickerInner}>
+                                    {options.map((option, index) => (
+                                        <Picker.Item key={index} value={option.value} label={option.label}/>
+                                    ))}
+                                </Picker>
+                            )
+                        }
+                    </View>
+                </View>
             </View>
 
 
-            <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer} contentContainerStyle={styles.scrollBarItemsContainer}>
+            <ScrollView onScrollToTop={fetchItems} style={styles.itemsContainer}
+                        contentContainerStyle={styles.scrollBarItemsContainer}>
                 {
                     searchedItems.length > 0 ? searchedItems.map((item, index) => {
-                        return <MarketplaceItemCard key={index} item={item} onPress={() => navigation.navigate('ItemDetails', {item:item})}/>
-                    }) : (null)
-                } 
+                        return <MarketplaceItemCard key={index} item={item}
+                                                    onPress={() => navigation.navigate('ItemDetails', {item: item})}/>
+                    }) : null
+                }
                 {
                     (searchedItems.length == 0 && category === 'all') ? items.map((item, index) => {
-                        return <MarketplaceItemCard key={index} onPress={() => navigation.navigate('ItemDetails', { item: item, userid: user.uid })} item={item} />
-                    }) : (null)
+                        return <MarketplaceItemCard key={index} onPress={() => navigation.navigate('ItemDetails', {
+                            item: item,
+                            userid: user.uid
+                        })} item={item}/>
+                    }) : null
                 }
             </ScrollView>
         </View>
@@ -140,11 +167,26 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
     },
     picker: {
-        width: '80%',
-      },
-      pickerInner: {
-        color: 'blue',
-      },
+        width: '30%',
+        height: 65,
+        marginLeft: "5%",
+        backgroundColor: '#393e42',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+    },
+    pickerInner: {
+        backgroundColor: "#303337",
+        color: '#86939e',
+        height: 50,
+        width: "90%",
+        fontSize: 20,
+        textAlign: 'center',
+        textAlignVertical: 'center',
+    },
+    searchbar: {
+        width: '65%',
+    }
 });
 
 export default MarketplaceScreen;

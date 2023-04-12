@@ -31,38 +31,58 @@ const SignUpScreen = ({navigation}) => {
         setUserData({...userData, image_url: result.assets[0].uri})
     }
 
+    const Separator = (): React.ReactElement => {
+        return <View marginT-5 marginB-5>
+            <View height={1} bg-dark70 style={{marginHorizontal: 10}}/>
+        </View>
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => DismissKeyboard()}>
             <View flex paddingH-25 style={styles.container}>
                 <Background/>
                 <Heading1 text="Sign Up"/>
                 <TextField
+                    migrate
+                    text50 grey10
                     placeholder='Full Name'
                     value={userData ? userData.fullname : ''}
                     onChangeText={(txt) => setUserData({...userData, fullname: txt})}
                     numberOfLines={1}
                     keyboardType={'default'}
                 />
+                <Separator/>
                 <TextField
+                    migrate
+                    text50 grey10
                     placeholder="Country"
                     autoCorrect={false}
                     value={userData ? userData.country : ''}
                     onChangeText={(txt) => setUserData({...userData, country: txt})}
                 />
+                <Separator/>
                 <TextField
+                    migrate
+                    text50 grey10
                     placeholder="City"
                     autoCorrect={false}
                     value={userData ? userData.city : ''}
                     onChangeText={(txt) => setUserData({...userData, city: txt})}
                 />
+                <Separator/>
                 <TextField
+                    migrate
+                    text50 grey10
                     placeholder='Email Address'
                     onChangeText={(email) => setEmail(email)}
                     numberOfLines={1}
                     value={email}
                     keyboardType={'email-address'}
                 />
+                <Separator/>
                 <TextField
+                    migrate
+                    text50 grey10
                     placeholder='Password'
                     onChangeText={(password) => setPassword(password)}
                     numberOfLines={1}
