@@ -31,7 +31,7 @@ const RatingScreenBorrower = ({navigation, route}) => {
                         })
                     }
                 })
-            getDoc(doc(db, "items", item))
+            getDoc(doc(db, "items", item.id))
                 .then(snapshot => {
                     if(snapshot.exists) {
                         const data = snapshot.data();
@@ -67,7 +67,7 @@ const RatingScreenBorrower = ({navigation, route}) => {
             rating_count: count,
             rating_total: total 
         })
-        await setDoc(doc(db, "items", item), {
+        await setDoc(doc(db, "items", item.id), {
             borrowed: itemData.borrowed,
             borrowed_by: itemData.borrowed_by,
             category: itemData.category,

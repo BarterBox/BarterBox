@@ -154,6 +154,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                             });
                             id = newChat.id;
                         }
+<<<<<<< Updated upstream
                         else {
                             id = existingChat.id;
                         }
@@ -208,6 +209,38 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                                                   setRefreshRequests(-refreshRequest)
                                               })} />
                                 </View>
+=======
+                        } />
+                    ) : (null) }
+                {(item.owner == route.params.userid && item.borrowed && item.return_ready) ? (
+                    <BBButton label="Item Returned"
+                        onPress={async () => {
+                            await handleReturnItem(item, navigation.goBack())
+                        }}
+                    />
+                ) : (null)}
+                {(item.borrowed_by.id === route.params.userid && item.borrowed && !item.return_ready) ? (
+                    <BBButton label="Return Item"
+                        onPress={async () => {
+                            await handleItemReturn(item, navigation.goBack())
+                        }}
+                    />
+                ) : (null)}
+                {item.owner == route.params.userid && !item.borrowed && recentRequest != null ?
+                    (<>
+                        <View>
+                            <Text>
+                                Request by {recentRequest.requestedBy.displayName}
+                            </Text>
+                            <View style={styles.requestButtonsContainer}>
+                                <BBButton label={`Accept`}
+                                    onPress={() => handleAcceptRequest(item, recentRequest, () => alert("Request Accepted"))} />
+                                <BBButton label={`Reject`}
+                                    onPress={() => handleRejectRequest(item, recentRequest, () => {
+                                        alert("Request rejected")
+                                        setRefreshRequests(-refreshRequest)
+                                    })} />
+>>>>>>> Stashed changes
                             </View>
 
                         </>) :
