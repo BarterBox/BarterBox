@@ -51,7 +51,6 @@ export async function getUsersFromCity(city: string, excludeUserId: string) {
   const userIDs = usersSnapshot.docs
     .filter(doc => doc.id !== excludeUserId)
     .map(doc => doc.id);
-  console.log("UserIds", userIDs);
   return userIDs;
 };
 
@@ -64,7 +63,6 @@ export async function getItemsByCity(city: string, excludeUserId: string) {
 	item.id = doc.id
 	return item
 	});
-//   console.log("Items:", items); // Add this line
   return items;
 };
 
@@ -78,7 +76,6 @@ export async function getMostRecentItemRequest(itemId: string) {
 			const doc = snapshot.docs[0];
 			let request = doc.data()
 			request.id = doc.id
-			console.log(doc.id, ' => ', request);
 			let userData = await getUserById(request.requestedBy);
 			userData.id = request.requestedBy
 			request.requestedBy = userData
