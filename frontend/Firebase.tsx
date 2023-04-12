@@ -53,6 +53,14 @@ export async function getUsersFromCity(city: string, excludeUserId: string) {
     .map(doc => doc.id);
   return userIDs;
 };
+export async function getUsersByName(displayName: string) {
+	const usersSnapshot = await getDocs(query(collection(db, 'Users'), where('displayName', '==', displayName)));
+	const userIDs = usersSnapshot.docs
+	  .map(doc => doc.id);
+	console.log("UserIds", userIDs);
+	return userIDs;
+  };
+  
 
 export async function getItemsByCity(city: string, excludeUserId: string) {
   const userIDs = await getUsersFromCity(city, excludeUserId);

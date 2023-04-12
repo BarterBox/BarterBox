@@ -40,7 +40,7 @@ const MarketplaceScreen = ({navigation}) => {
 
     const handleChange = (event) => {
         console.log(event);
-        setcategory(event);
+        setcategory(event);  
         updatecategory(event);
     };
 
@@ -62,7 +62,6 @@ const MarketplaceScreen = ({navigation}) => {
                 searchedItems.push(items[i]);
             }
         }
-        console.log('searched item length ' + searchedItems.length);
         setSearchedItems(searchedItems)
     }
 
@@ -75,14 +74,10 @@ const MarketplaceScreen = ({navigation}) => {
         for (let i = 0; i < items.length; i++) {
             if (items[i].category === category) {
                 searchedItems.push(items[i]);
-                console.log("hello + ", i);
             }
 
         }
-
-        console.log(searchedItems.length);
         setSearchedItems(searchedItems);
-        console.log('search category working' + searchedItems);
     }
 
 
