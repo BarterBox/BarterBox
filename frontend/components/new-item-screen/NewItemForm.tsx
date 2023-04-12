@@ -48,6 +48,7 @@ const NewItemForm = ({ onSubmit }) => {
                 date_uploaded: serverTimestamp(),
                 borrowed: false,
                 borrowed_by: "",
+                return_ready: false
             })
 
             // Reset the form

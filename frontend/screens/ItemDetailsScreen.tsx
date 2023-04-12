@@ -186,7 +186,7 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                                   }}
                         />
                     ) : (null)}
-                    {(item.borrowed_by.id === route.params.userid && item.borrowed) ? (
+                    {(item.borrowed_by.id === route.params.userid && item.borrowed && !item.return_ready) ? (
                         <BBButton label="Return Item"
                                   onPress={async () => {
                                       await handleItemReturn(item, navigation.goBack())
