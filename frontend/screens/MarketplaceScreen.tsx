@@ -10,6 +10,7 @@ import {SearchBar} from '@rneui/themed';
 import {Image} from 'react-native';
 import Background from "../components/general/Background";
 import {Picker} from '@react-native-picker/picker';
+import {useFocusEffect} from '@react-navigation/native';
 
 
 const MarketplaceScreen = ({navigation}) => {
@@ -81,9 +82,9 @@ const MarketplaceScreen = ({navigation}) => {
     }
 
 
-    useEffect(() => {
+    useFocusEffect(React.useCallback(() => {
         fetchItems()
-    }, []);
+    }, []));
 
     return (
         <View style={styles.container}>
