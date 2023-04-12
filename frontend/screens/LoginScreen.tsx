@@ -13,6 +13,12 @@ const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const Separator = (): React.ReactElement => {
+        return <View marginT-5 marginB-5>
+            <View height={1} bg-dark70 style={{marginHorizontal: 10}}/>
+        </View>
+    }
+
     return (
         <TouchableWithoutFeedback onPress={() => DismissKeyboard()}>
             <View flex paddingH-25 style={styles.container}>
@@ -20,6 +26,7 @@ const LoginScreen = ({navigation}) => {
                 <Heading1 text="Login"/>
                 <View>
                     <TextField
+                        migrate
                         text50 grey10
                         placeholder='Email Address'
                         onChangeText={(email) => setEmail(email)}
@@ -27,7 +34,9 @@ const LoginScreen = ({navigation}) => {
                         value={email}
                         keyboardType={'email-address'}
                     />
+                    <Separator/>
                     <TextField text50 grey10
+                               migrate
                                placeholder='Password'
                                onChangeText={(password) => setPassword(password)}
                                numberOfLines={1}
