@@ -8,6 +8,7 @@ import { app, getUserById, getMostRecentItemRequest } from '../Firebase';
 import { getFirestore, getDoc, getDocs, addDoc, deleteDoc, setDoc, doc, query, collection, where, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import BBButton from "../components/general/BBButton";
 import { AuthContext } from '../navigation/AuthProvider';
+import {ChatRedirectContext} from "../context/Context";
 
 const database = getFirestore(app);
 
@@ -84,6 +85,8 @@ const ItemDetailsScreen = ({ navigation, route }) => {
     const {user} = useContext(AuthContext)
     const [recentRequest, setRecentRequest] = useState(null);
     const [refreshRequest, setRefreshRequests] = useState(1)
+    const [ownerName, setOwnerName] = useState("")
+    const { setChatRedirect } = useContext(ChatRedirectContext)
     const handleReturnItem = async (item, callback) => {
         const { displayName, image_url, email } = await getUserById(item.borrowed_by.id);
         navigation.navigate("RatingLender", { screen: "RatingLender", params: { ownerid: item.owner, borrowerName: displayName, borrowerid: item.borrowed_by.id, item: item.id } })
@@ -97,6 +100,9 @@ const ItemDetailsScreen = ({ navigation, route }) => {
     }
 
     useEffect(() => {
+        getDoc(doc(database, "Users", item.owner)).then((doc) => {
+            setOwnerName(doc.data().displayName)
+        })
         getMostRecentItemRequest(item.id).then((request) => setRecentRequest(request))
             .catch(err => console.log(err))
     }, [refreshRequest])
@@ -109,9 +115,16 @@ const ItemDetailsScreen = ({ navigation, route }) => {
                 <Text style={styles.heading}>{item.heading}</Text>
                 <View style={{ borderBottomColor: 'black', borderBottomWidth: 1, marginTop: 10, marginBottom: 10 }} />
                 <Text></Text>
+                <Text>Owner</Text>
+                <Text>{ownerName}</Text>
+                <Text></Text>
+                <Text>Category:</Text>
+                <Text>{item.category}</Text>
+                <Text></Text>
                 <Text>Description:</Text>
                 <Text>{item.description}</Text>
-                
+                <View style={{ borderBottomColor: 'black', borderBottomWidth: 1, marginTop: 10, marginBottom: 10 }} />
+
                 {item.owner != route.params.userid && <BBButton label="Message owner" onPress={async () => {
 
                     if (item.owner == route.params.userid) {
@@ -146,7 +159,8 @@ const ItemDetailsScreen = ({ navigation, route }) => {
 
                     //navigate to the new chat created (or existing)
                     const { displayName, image_url, email } = await getUserById(item.owner);
-                    navigation.navigate("MessagingScreen", { screen: "MessagingScreen", params: { chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email } }, userid: route.params.userid } })
+                    setChatRedirect({ chat: { id: id, correspondant: { displayName: displayName, photoURL: image_url, email: email, id: item.owner } }, userid: route.params.userid });
+                    navigation.navigate("Messages")
                 }}></BBButton>}
 
                 {item.owner == route.params.userid ?
