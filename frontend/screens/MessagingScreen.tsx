@@ -59,7 +59,7 @@ const MessagingScreen = ({ navigation, route }) => {
 
         unsub = onSnapshot(query(collection(database, `chats/${route.params.chat.id}/messages`)), (snapshot) => {
             Promise.all(snapshot.docs.filter((document, index) => {
-                return document.data() && true;
+                return document.data().content!=null;
             })
                 .map((document, index) => {
                     return { id: index, message: document.data() };
