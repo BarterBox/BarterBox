@@ -1,9 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {View, KeyboardAvoidingView, FlatList, Text, TextInput, BackHandler, ScrollView} from 'react-native';
+import React, {useContext,useState, useEffect} from 'react';
+import {View, KeyboardAvoidingView, FlatList, Text, TextInput, BackHandler, ScrollView, Image} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {app} from '../Firebase';
 import {Button, Colors} from 'react-native-ui-lib';
-import {getFirestore, getDocs, setDoc, doc, query, collection, onSnapshot} from "firebase/firestore";
+import {getFirestore, getDocs,getDoc, setDoc, doc, query, collection, onSnapshot} from "firebase/firestore";
+import {AuthContext} from '../navigation/AuthProvider';
+import User from "../types/User";
+import {getUsersByName} from "../Firebase";
 
 import UserCard from '../components/messaging/UserCard';
 import Background from "../components/general/Background";
@@ -16,9 +19,16 @@ const MessagingScreen = ({ navigation, route }) => {
     const scrollViewRef = React.useRef<ScrollView>(null);
 
     const [messages, setMessages] = useState([]);
-
+    const [users, setItems] = useState<User[]>([]);
+    const [name, setName] = useState('');
     const [input, setInput] = useState("");
+    const [userRating, setUserRating] = useState('')
+    const [stars, setStars] = useState([1, 2, 3, 4, 5])
+    const { user } = useContext(AuthContext)
 
+    const intUserRating = Number.parseInt(userRating, 10)
+    const starImageFilled = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_filled.png';
+    const starImageUnfilled = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_corner.png';
     BackHandler.addEventListener(
         "hardwareBackPress",
         () => {
@@ -27,8 +37,22 @@ const MessagingScreen = ({ navigation, route }) => {
         }
     )
 
-    const Spacer = <View style={{ height: 5 }}></View>;
+
     useEffect(() => {
+        const correspId = route.params.chat.correspondant.id;
+        console.log('correspId'+correspId)
+        getDoc(doc(database, "Users", correspId))
+            .then(snapshot => {
+                if (snapshot && snapshot.exists()) {
+                    const data = snapshot.data();
+                    setUserRating(data.rating);
+                    setName(data.displayName);
+                    console.log('rating data'+data);
+                } else {
+                    console.log("No such document!");
+                }
+            })
+
         if(scrollViewRef.current) scrollViewRef.current.scrollToEnd({ animated: true });
         unsub = onSnapshot(query(collection(database, `chats/${route.params.chat.id}/messages`)), (snapshot) => {
             Promise.all(snapshot.docs.filter((document, index) => {
@@ -45,6 +69,22 @@ const MessagingScreen = ({ navigation, route }) => {
             <View style={styles.header}>
                 <UserCard backButton user={route.params.chat.correspondant} onBack={unsub} onPress={() => {
                 }}></UserCard>
+                <View style={styles.customRatingBarStyle}>
+                    {stars.map((item, key) => {
+                        return (
+                            <Image
+                                key={item}
+                                style={styles.starImageStyle}
+                                source={
+                                    item <= intUserRating
+                                        ? {uri: starImageFilled}
+                                        : {uri: starImageUnfilled}
+                                }
+                            />
+                        );
+                    })}
+                </View>
+
             </View>
             <ScrollView style={styles.chatContainer} ref={scrollViewRef}>
                 {
@@ -152,6 +192,16 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 0,
         width: "100%",
+    },
+    starImageStyle: {
+        width: 40,
+        height: 40,
+        resizeMode: 'cover',
+    },
+    customRatingBarStyle: {
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginTop: 30,
     },
 });
 
